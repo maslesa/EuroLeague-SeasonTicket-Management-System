@@ -20,29 +20,14 @@ public class FanPaymentMethodPage extends javax.swing.JFrame {
     /**
      * Creates new form FanPaymentMethodPage
      */
+    Fan fan;
     
-    int id;
-    String name;
-    String surname;
-    String username;
-    String email;
-    String birthday;
-    String phone;
-    String password;
-    
-    public FanPaymentMethodPage(int id, String name, String surname, String username, String email, String birthday, String phone, String password) {
+    public FanPaymentMethodPage(Fan fan) {
         initComponents();
         setLocationRelativeTo(null);
         setVisible(true);
         setResizable(false);
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.username = username;
-        this.email = email;
-        this.birthday = birthday;
-        this.phone = phone;
-        this.password = password;
+        this.fan = fan;
         fillTable();
     }
 
@@ -134,12 +119,12 @@ public class FanPaymentMethodPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
-        FanHomePage fhp = new FanHomePage(id, name, surname, username, email, birthday, phone, password);
+        FanHomePage fhp = new FanHomePage(fan);
         dispose();
     }//GEN-LAST:event_btnGoBackActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        NewPaymentMethodInput npmi = new NewPaymentMethodInput(this, true, id, name, surname, username, email, birthday, phone, password);
+        NewPaymentMethodInput npmi = new NewPaymentMethodInput(this, true, fan);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -159,7 +144,7 @@ public class FanPaymentMethodPage extends javax.swing.JFrame {
             System.out.println("Uspesno povezano sa bazom");
             
             PreparedStatement ps = con.prepareStatement("SELECT * FROM racun WHERE idNavijac = ?");
-            ps.setInt(1, id);
+            ps.setInt(1, fan.getIdNavijac());
             
             ResultSet rs = ps.executeQuery();
             

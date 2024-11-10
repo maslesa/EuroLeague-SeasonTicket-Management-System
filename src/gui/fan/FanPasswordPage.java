@@ -4,6 +4,7 @@
  */
 package gui.fan;
 
+import classes.Fan;
 import gui.login.LoginPage;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,31 +22,18 @@ import javax.swing.text.BadLocationException;
  * @author Ljubomir
  */
 public class FanPasswordPage extends javax.swing.JFrame {
-    int id;
-    String name;
-    String surname;
-    String username;
-    String email;
-    String birthday;
-    String phone;
-    String password;
+    
+    Fan fan;
     
     /**
      * Creates new form FanPasswordPage
      */
-    public FanPasswordPage(int id, String name, String surname, String username, String email, String birthday, String phone, String password) {
+    public FanPasswordPage(Fan fan) {
         initComponents();
         setVisible(true);
         setLocationRelativeTo(null);
         setResizable(false);
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.username = username;
-        this.email = email;
-        this.birthday = birthday;
-        this.phone = phone;
-        this.password = password;
+        this.fan = fan;
         addListeners();
     }
 
@@ -199,7 +187,7 @@ public class FanPasswordPage extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
-        FanHomePage fhp = new FanHomePage(id, name, surname, username, email, birthday, phone, password);
+        FanHomePage fhp = new FanHomePage(fan);
         dispose();
     }//GEN-LAST:event_btnGoBackActionPerformed
 
@@ -208,9 +196,9 @@ public class FanPasswordPage extends javax.swing.JFrame {
             char[] newPassChar = newPassCh.getPassword();
             String newPassword = new String(newPassChar);
             updatePassword(newPassword);
-            this.password = newPassword;
+            fan.setPassword(newPassword);
             JOptionPane.showMessageDialog(rootPane, "Password changed successfully", "Password changed", JOptionPane.INFORMATION_MESSAGE);
-            FanHomePage fhp = new FanHomePage(id, name, surname, username, email, birthday, phone, password);
+            FanHomePage fhp = new FanHomePage(fan);
             dispose();
         }else{
             JOptionPane.showMessageDialog(rootPane, "Inputs error", "Error", JOptionPane.ERROR_MESSAGE);
@@ -241,10 +229,10 @@ public class FanPasswordPage extends javax.swing.JFrame {
             
             private void checkOldPass(DocumentEvent e){
                 try {
-                    System.out.println("Pass: " + password);
+                    System.out.println("Pass: " + fan.getPassword());
                     String oldPassInput = e.getDocument().getText(0, e.getDocument().getLength());
                     System.out.println(oldPassInput);
-                    if(!oldPassInput.equals(password)){
+                    if(!oldPassInput.equals(fan.getPassword())){
                         oldPassChecker.setText("Incorrect");
                     }else{
                         oldPassChecker.setText("");
@@ -356,12 +344,12 @@ public class FanPasswordPage extends javax.swing.JFrame {
         char[] newPassConfChar = newPassConfCh.getPassword();
         String newPasswordConf = new String(newPassConfChar);
         
-        System.out.println("Old pass: " + password);
+        System.out.println("Old pass: " + fan.getPassword());
         System.out.println("Old pass input: " + oldPassword);
         System.out.println("New pass: " + newPassword);
         System.out.println("New pass conf: " + newPasswordConf);
         
-        if(oldPassword.equals(password) && newPassword.equals(newPasswordConf)){
+        if(oldPassword.equals(fan.getPassword()) && newPassword.equals(newPasswordConf)){
             System.out.println("Vracam tacno");
             return true;
         }else{
@@ -382,7 +370,7 @@ public class FanPasswordPage extends javax.swing.JFrame {
             PreparedStatement ps = con.prepareStatement(sql);
 
             ps.setString(1, newPassword);
-            ps.setInt(2, id);
+            ps.setInt(2, fan.getIdNavijac());
         
             ps.executeUpdate();  
             

@@ -5,6 +5,7 @@
 package gui.login;
 
 
+import classes.Fan;
 import gui.club.ClubHomePage;
 import gui.fan.FanHomePage;
 import java.sql.*;
@@ -13,20 +14,14 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import db.DBControllerLogin;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 /**
  *
  * @author Ljubomir
  */
 public class LoginPage extends javax.swing.JFrame implements DBControllerLogin{
-
-    int id;
-    String name;
-    String surname;
-    String username;
-    String email;
-    String birthday;
-    String phone;
-    String password;
+    
+    Fan fan = new Fan("", "", "", "", LocalDate.MIN, "", "");
     
     /**
      * Creates new form LoginPage
@@ -38,19 +33,12 @@ public class LoginPage extends javax.swing.JFrame implements DBControllerLogin{
         setLocationRelativeTo(null);
     }
     
-    public LoginPage(int id, String name, String surname, String username, String email, String birthday, String phone, String password){
+    public LoginPage(Fan fan){
         initComponents();
         setVisible(true);
         setResizable(false);
         setLocationRelativeTo(null);
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.username = username;
-        this.email = email;
-        this.birthday = birthday;
-        this.phone = phone;
-        this.password = password;
+        this.fan = fan;
     }
 
     @SuppressWarnings("unchecked")
@@ -175,7 +163,7 @@ public class LoginPage extends javax.swing.JFrame implements DBControllerLogin{
         
         if(userExistsLogin(inputUsername, inputPassword)){
             fillVariables(inputUsername);
-            FanHomePage hp = new FanHomePage(id, name, surname, username, email, birthday, phone, password);
+            FanHomePage hp = new FanHomePage(fan);
             dispose();
         }else if(ClubExistsLogin(inputUsername, inputPassword)){
             ClubHomePage chp = new ClubHomePage();
@@ -265,17 +253,17 @@ public class LoginPage extends javax.swing.JFrame implements DBControllerLogin{
             ResultSet rs = ps.executeQuery();
             
             while(rs.next()){
-                id = rs.getInt("idNavijac");
-                name = rs.getString("name");
-                surname = rs.getString("surname");
-                this.username = rs.getString("username");
-                email = rs.getString("email");
+                fan.setIdNavijac(rs.getInt("idNavijac"));
+                fan.setName(rs.getString("name"));
+                fan.setSurname(rs.getString("surname"));
+                fan.setUsername(rs.getString("username"));
+                fan.setEmail(rs.getString("email"));
                 Date birthdayDate = rs.getDate("birthday");
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                birthday = dateFormat.format(birthdayDate);
-                phone = rs.getString("phone");
-                password = rs.getString("password");
-                System.out.println("id:" + id + " name:" + name + "surname:" + surname + "username:" + username);
+                LocalDate birthday = birthdayDate.toLocalDate();
+                fan.setBirthday(birthday);
+                fan.setPhone(rs.getString("phone"));
+                fan.setPassword(rs.getString("password"));
+                System.out.println("id:" + fan.getIdNavijac() + " name:" + fan.getName() + "surname:" + fan.getSurname() + "username:" + username);
             }
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);

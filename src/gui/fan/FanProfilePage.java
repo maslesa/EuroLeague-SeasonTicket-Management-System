@@ -3,12 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package gui.fan;
+import classes.Fan;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import gui.login.LoginPage;
 import gui.login.SignupPage;
 import java.awt.HeadlessException;
+import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -24,41 +26,30 @@ public class FanProfilePage extends javax.swing.JFrame {
     private static final String phonePattern = "^\\+?[0-9]{7,15}$";
 
     private boolean changeMode = false;
-    int id;
-    String name;
-    String surname;
-    String username;
-    String email;
-    String birthday;
-    String phone;
-    String password;
+    
+    Fan fan;
     
     /**
      * Creates new form FanProfilePage
      */
-    public FanProfilePage(int id, String name, String surname, String username, String email, String birthday, String phone, String password) {
+    public FanProfilePage(Fan fan) {
         initComponents();
         setVisible(true);
         setResizable(false);
         setLocationRelativeTo(null);
         cancelChangeProfile.setVisible(false);
         changeProfile.setVisible(false);
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.username = username;
-        this.email = email;
-        this.birthday = birthday;
-        this.phone = phone;
-        this.password = password;
-        String idStr = Integer.toString(id);
+        this.fan = fan;
+        String idStr = Integer.toString(fan.getIdNavijac());
         idTxtView.setText(idStr);
-        nameTxtView.setText(name);
-        surnameTxtView.setText(surname);
-        usernameTxtView.setText(username);
-        emailTxtView.setText(email);
+        nameTxtView.setText(fan.getName());
+        surnameTxtView.setText(fan.getSurname());
+        usernameTxtView.setText(this.fan.getUsername());
+        emailTxtView.setText(fan.getEmail());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String birthday = fan.getBirthday().format(formatter);
         birhdayTxtView.setText(birthday);
-        phoneTxtView.setText(phone);
+        phoneTxtView.setText(fan.getPhone());
         addListener();
     }
 
@@ -270,9 +261,9 @@ public class FanProfilePage extends javax.swing.JFrame {
     
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
         if(changeMode && madeChanges()){
-            AYSPopup popUpQuestion = new AYSPopup(this, true, id, name, surname, username, email, birthday, phone, password);
+            AYSPopup popUpQuestion = new AYSPopup(this, true, fan);
         }else{
-            FanHomePage fhp = new FanHomePage(id, name, surname, username, email, birthday, phone, password);
+            FanHomePage fhp = new FanHomePage(fan);
             dispose();
         }
     }//GEN-LAST:event_btnGoBackActionPerformed
@@ -296,12 +287,12 @@ public class FanProfilePage extends javax.swing.JFrame {
             cancelChangeProfile.setVisible(false);
             changeProfile.setVisible(false);
             changeMode = false;
-        
-            this.name = newName;
-            this.surname = newSurname;
-            this.username = newUsername;
-            this.email = newEmail;
-            this.phone = newPhone;
+            
+            fan.setName(newName);
+            fan.setSurname(newSurname);
+            fan.setUsername(newUsername);
+            fan.setEmail(newEmail);
+            fan.setPhone(newPhone);
             
             JOptionPane.showMessageDialog(rootPane, "User updated", "Updated successfully", JOptionPane.INFORMATION_MESSAGE);
             
@@ -313,7 +304,7 @@ public class FanProfilePage extends javax.swing.JFrame {
     }//GEN-LAST:event_changeProfileActionPerformed
 
     private void cancelChangeProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelChangeProfileActionPerformed
-        FanHomePage fhp = new FanHomePage(id, name, surname, username, email, birthday, phone, password);
+        FanHomePage fhp = new FanHomePage(fan);
         dispose();
     }//GEN-LAST:event_cancelChangeProfileActionPerformed
 
@@ -366,7 +357,7 @@ public class FanProfilePage extends javax.swing.JFrame {
             ps.setString(3, newUsername);
             ps.setString(4, newEmail);
             ps.setString(5, newPhone);
-            ps.setInt(6, id);
+            ps.setInt(6, fan.getIdNavijac());
         
             ps.executeUpdate();  
             
@@ -499,7 +490,7 @@ public class FanProfilePage extends javax.swing.JFrame {
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 String username = resultSet.getString("username");
-                if (usernameInput.equals(username) && !usernameInput.equals(this.username)) {
+                if (usernameInput.equals(username) && !usernameInput.equals(fan.getUsername())) {
                     System.out.println("Poklapa se");
                     return true;
                 }
@@ -533,9 +524,9 @@ public class FanProfilePage extends javax.swing.JFrame {
     }
     
     private boolean madeChanges(){
-        if(nameTxtView.getText().equals(name) && surnameTxtView.getText().equals(surname) &&
-                usernameTxtView.getText().equals(username) && emailTxtView.getText().equals(email)
-                && phoneTxtView.getText().equals(phone)) return false;
+        if(nameTxtView.getText().equals(fan.getName()) && surnameTxtView.getText().equals(fan.getSurname()) &&
+                usernameTxtView.getText().equals(fan.getUsername()) && emailTxtView.getText().equals(fan.getEmail())
+                && phoneTxtView.getText().equals(fan.getPhone())) return false;
         return true;
     }
 }

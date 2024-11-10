@@ -30,14 +30,8 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
     private static final String emailPattern = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$";
     private static final String phonePattern = "^\\+?[0-9]{7,15}$";
     
-    int id;
-    String name;
-    String surname;
-    String username;
-    String email;
-    String birthday;
-    String phone;
-    String password;
+    Fan fan;
+    
     /**
      * Creates new form SignupPage
      */
@@ -49,20 +43,13 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
         addListener();
     }
     
-    public SignupPage(int id, String name, String surname, String username, String email, String birthday, String phone, String password){
+    public SignupPage(Fan fan){
         initComponents();
         setResizable(false);
         setLocationRelativeTo(null);
         fillDateFields();
         addListener();
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.username = username;
-        this.email = email;
-        this.birthday = birthday;
-        this.phone = phone;
-        this.password = password;
+        this.fan = fan;
     }
 
     /**
@@ -418,8 +405,7 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
         if(!inputsOK()){
             JOptionPane.showMessageDialog(rootPane, "Inputs error", "Error", JOptionPane.ERROR_MESSAGE);
         }else{
-            Fan noviNavijac = new Fan(name, surname, username, email, birthday, phone, password);
-            addNewNavijac(noviNavijac);
+            addNewNavijac(fan);
         }
     }//GEN-LAST:event_signupBtnActionPerformed
 
@@ -514,7 +500,7 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
 		if (rowsAffected > 0) {
                     JOptionPane.showMessageDialog(rootPane, "User added", "Successful", JOptionPane.INFORMATION_MESSAGE);
                     
-                    FanHomePage hp = new FanHomePage(id, name, surname, username, email, birthday, phone, password);
+                    FanHomePage hp = new FanHomePage(fan);
                     
                     hp.setVisible(true);
                     dispose();

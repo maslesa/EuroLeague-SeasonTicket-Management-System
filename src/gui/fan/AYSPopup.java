@@ -4,6 +4,7 @@
  */
 package gui.fan;
 
+import classes.Fan;
 import java.awt.*;
 
 /**
@@ -15,34 +16,19 @@ public class AYSPopup extends javax.swing.JDialog {
     /**
      * Creates new form AYSPopup
      */
-    
-    int id;
-    String name;
-    String surname;
-    String username;
-    String email;
-    String birthday;
-    String phone;
-    String password;
+    Fan fan;
     
     private java.awt.Frame parentFrame;
     
-    public AYSPopup(java.awt.Frame parent, boolean modal, int id, String name, String surname, String username, String email, String birthday, String phone, String password) {
+    public AYSPopup(java.awt.Frame parent, boolean modal, Fan fan) {
         super(parent, modal);
         this.parentFrame = parent;
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.username = username;
-        this.email = email;
-        this.birthday = birthday;
-        this.phone = phone;
-        this.password = password;
+        this.fan = fan;
         initComponents();
         setLocationRelativeTo(parent);
         setVisible(true);
         setResizable(false);
-        System.out.println("POPUP: " + username);
+        System.out.println("POPUP: " + fan.getUsername());
     }
 
     /**
@@ -115,8 +101,8 @@ public class AYSPopup extends javax.swing.JDialog {
     }//GEN-LAST:event_btnNoActionPerformed
 
     private void btnYesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnYesActionPerformed
-        System.out.println("POPUPYES: " + username);
-        FanHomePage fhp = new FanHomePage(id, name, surname, username, email, birthday, phone, password);
+        System.out.println("POPUPYES: " + fan.getUsername());
+        FanHomePage fhp = new FanHomePage(fan);
         
         parentFrame.dispose();
         dispose();

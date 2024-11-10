@@ -4,6 +4,7 @@
  */
 package gui.fan;
 
+import classes.Fan;
 import gui.login.LoginPage;
 import gui.fan.FanProfilePage;
 import java.time.LocalDate;
@@ -14,32 +15,19 @@ import java.time.LocalDate;
  */
 public class FanHomePage extends javax.swing.JFrame {
     
-    int id;
-    String name;
-    String surname;
-    String username;
-    String email;
-    String birthday;
-    String phone;
-    String password;
+    Fan fan;
 
     /**
      * Creates new form HomePage
+     * @param fan
      */
-    public FanHomePage(int id, String name, String surname, String username, String email, String birthday, String phone, String password) {
+    public FanHomePage(Fan fan) {
         initComponents();
         setVisible(true);
         setLocationRelativeTo(null);
         setResizable(false);
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.username = username;
-        this.email = email;
-        this.birthday = birthday;
-        this.phone = phone;
-        this.password = password;
-        String welcome = "Welcome " + name;
+        this.fan = fan;
+        String welcome = "Welcome " + fan.getUsername();
         welcomeMessage.setText(welcome);
     }
 
@@ -185,18 +173,18 @@ public class FanHomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        System.out.println(username);
-        FanProfilePage fpp = new FanProfilePage(id, name, surname, username, email, birthday, phone, password);
+        System.out.println(fan.getUsername());
+        FanProfilePage fpp = new FanProfilePage(fan);
         dispose();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        FanPasswordPage fpp = new FanPasswordPage(id, name, surname, username, email, birthday, phone, password);
+        FanPasswordPage fpp = new FanPasswordPage(fan);
         dispose();
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-        FanPaymentMethodPage fpmp = new FanPaymentMethodPage(id, name, surname, username, email, birthday, phone, password);
+        FanPaymentMethodPage fpmp = new FanPaymentMethodPage(fan);
         dispose();
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
