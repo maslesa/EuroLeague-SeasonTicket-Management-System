@@ -4,7 +4,7 @@
  */
 package gui.fan;
 
-import classes.Fan;
+import models.Fan;
 import gui.login.LoginPage;
 import gui.fan.FanProfilePage;
 import java.time.LocalDate;
@@ -23,12 +23,12 @@ public class FanHomePage extends javax.swing.JFrame {
      */
     public FanHomePage(Fan fan) {
         initComponents();
-        setVisible(true);
         setLocationRelativeTo(null);
         setResizable(false);
         this.fan = fan;
         String welcome = "Welcome " + fan.getUsername();
         welcomeMessage.setText(welcome);
+        setVisible(true);
     }
 
     /**

@@ -3,7 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package gui.fan;
-import classes.Fan;
+import controller.Controller;
+import models.Fan;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,6 +12,8 @@ import gui.login.LoginPage;
 import gui.login.SignupPage;
 import java.awt.HeadlessException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -28,6 +31,10 @@ public class FanProfilePage extends javax.swing.JFrame {
     private boolean changeMode = false;
     
     Fan fan;
+    List<String> allFansUsernames = new ArrayList<>();
+    
+    
+    Controller k = Controller.getInstance();
     
     /**
      * Creates new form FanProfilePage
@@ -50,6 +57,7 @@ public class FanProfilePage extends javax.swing.JFrame {
         String birthday = fan.getBirthday().format(formatter);
         birhdayTxtView.setText(birthday);
         phoneTxtView.setText(fan.getPhone());
+        allFansUsernames = k.getAllFansUsernames();
         addListener();
     }
 
@@ -276,7 +284,7 @@ public class FanProfilePage extends javax.swing.JFrame {
         String newPhone = phoneTxtView.getText();
         
         if(inputsOK()){
-            updateDatasInBase(newName, newSurname, newUsername, newEmail, newPhone);
+            k.updateDatasInBase(newName, newSurname, newUsername, newEmail, newPhone, fan);
         
             nameTxtView.setEditable(false);
             surnameTxtView.setEditable(false);
@@ -341,37 +349,15 @@ public class FanProfilePage extends javax.swing.JFrame {
     private javax.swing.JTextField usernameTxtView;
     // End of variables declaration//GEN-END:variables
 
-    private void updateDatasInBase(String newName, String newSurname, String newUsername, String newEmail, String newPhone) {
-        Connection con = null;
-        
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/prosoft", "root", "root");
-            System.out.println("Uspesno povezano sa bazom");
-            
-            String sql = "UPDATE navijac SET name = ?, surname = ?, username = ?, email = ?, phone = ? WHERE idNavijac = ?";
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ps.setString(1, newName);
-            ps.setString(2, newSurname);
-            ps.setString(3, newUsername);
-            ps.setString(4, newEmail);
-            ps.setString(5, newPhone);
-            ps.setInt(6, fan.getIdNavijac());
-        
-            ps.executeUpdate();  
-            
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
-        }finally {
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
+    private boolean userWithThatUsernameExists(String usernameInput){
+        System.out.println("proveravam...");
+        for(int i = 0; i < allFansUsernames.size(); i++){
+            if(!usernameInput.equals(fan.getUsername()) && usernameInput.equals(allFansUsernames.get(i))){
+                System.out.println("postoji");
+                return true;
             }
         }
+        return false;
     }
     
     private void addListener(){
@@ -386,7 +372,7 @@ public class FanProfilePage extends javax.swing.JFrame {
                     String usernameInput = e.getDocument().getText(0, e.getDocument().getLength());
                     if(userWithThatUsernameExists(usernameInput)){
                         //System.out.println("Treba da se ispise");
-                        usernameChecker.setText("Username exists");
+                        usernameChecker.setText("exists");
                     }else if(usernameInput.length() < 5){
                         usernameChecker.setText("min 5 chars");
                     }else{
@@ -475,42 +461,6 @@ public class FanProfilePage extends javax.swing.JFrame {
         });
     }
         
-    public boolean userWithThatUsernameExists(String usernameInput) {
-        Connection con = null;
-	PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-	try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/prosoft", "root", "root");
-            System.out.println("uspesno povezano sa bazom");
-
-            String query = "select username from navijac";
-            preparedStatement = con.prepareStatement(query);
-            resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                String username = resultSet.getString("username");
-                if (usernameInput.equals(username) && !usernameInput.equals(fan.getUsername())) {
-                    System.out.println("Poklapa se");
-                    return true;
-                }
-            }
-            return false;
-	} catch (HeadlessException | ClassNotFoundException | SQLException e) {
-            System.out.println(e);
-	} finally {
-            try {
-		if (preparedStatement != null)
-                    preparedStatement.close();
-		if (con != null)
-                    con.close();
-		} catch (SQLException e) {
-                    e.printStackTrace();
-		}
-	}
-        return false;
-    }
-    
     private boolean inputsOK(){
         
         String email = emailTxtView.getText();

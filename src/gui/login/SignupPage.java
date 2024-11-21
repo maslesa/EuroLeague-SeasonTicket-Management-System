@@ -5,9 +5,9 @@
 package gui.login;
 
 import gui.fan.FanHomePage;
-import classes.Fan;
+import models.Fan;
+import controller.Controller;
 import java.time.LocalDate;
-import db.DBControllerSignup;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,18 +20,21 @@ import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import java.util.*;
 
 /**
  *
  * @author Ljubomir
  */
-public class SignupPage extends javax.swing.JFrame implements DBControllerSignup{
-    
+public class SignupPage extends javax.swing.JFrame {
+
     private static final String emailPattern = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$";
     private static final String phonePattern = "^\\+?[0-9]{7,15}$";
-    
-    Fan fan;
-    
+
+    Fan fan = new Fan("", "", "", "", LocalDate.MIN, "", "");
+    Controller k = Controller.getInstance();
+    List<String> allFansUsernames = new ArrayList<>();
+
     /**
      * Creates new form SignupPage
      */
@@ -41,17 +44,19 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
         setLocationRelativeTo(null);
         fillDateFields();
         addListener();
+        allFansUsernames = k.getAllFansUsernames();
     }
-    
-    public SignupPage(Fan fan){
+
+    public SignupPage(Fan fan) {
         initComponents();
         setResizable(false);
         setLocationRelativeTo(null);
         fillDateFields();
         addListener();
         this.fan = fan;
+        allFansUsernames = k.getAllFansUsernames();
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -395,22 +400,28 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
         String username = inpUsername.getText();
         String email = inpEmail.getText();
         String phone = inpPhone.getText();
-        
+
         LocalDate birthday = makeBirthday();
-        
+        System.out.println(String.valueOf(birthday));
+
         char[] pass = inpPassword.getPassword();
         String password = new String(pass);
         
-        
-        if(!inputsOK()){
+        fan = new Fan(name, surname, username, email, birthday, phone, password);
+
+        if (!inputsOK()) {
             JOptionPane.showMessageDialog(rootPane, "Inputs error", "Error", JOptionPane.ERROR_MESSAGE);
-        }else{
-            addNewNavijac(fan);
+        } else {
+            if(k.addNewNavijac(fan)){
+                this.dispose();
+                FanHomePage fhp = new FanHomePage(fan);
+            }else{
+                System.out.println("greska neka");
+            }
         }
     }//GEN-LAST:event_signupBtnActionPerformed
 
-    
-    
+
     private void inpNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inpNameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_inpNameActionPerformed
@@ -435,11 +446,9 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
     private void passConfCheckerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passConfCheckerFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_passConfCheckerFieldActionPerformed
-
     private void usernameCheckerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameCheckerFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_usernameCheckerFieldActionPerformed
-
     private void phoneCheckerFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_phoneCheckerFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_phoneCheckerFieldActionPerformed
@@ -476,85 +485,42 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
     private javax.swing.JTextField usernameCheckerField;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void addNewNavijac(Fan novi) {
-        Connection con = null;
-	PreparedStatement preparedStatement = null;
-
-	try {
-        	Class.forName("com.mysql.cj.jdbc.Driver");
-		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/prosoft", "root", "root");
-		System.out.println("uspesno povezano sa bazom");
-
-		String query = "INSERT INTO navijac (name, surname, username, email, birthday, phone, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
-		preparedStatement = con.prepareStatement(query);
-                preparedStatement.setString(1, novi.getName());
-		preparedStatement.setString(2, novi.getSurname());
-		preparedStatement.setString(3, novi.getUsername());
-                preparedStatement.setString(4, novi.getEmail());
-                preparedStatement.setDate(5, java.sql.Date.valueOf(novi.getBirthday()));
-                preparedStatement.setString(6, novi.getPhone());
-                preparedStatement.setString(7, novi.getPassword());
-
-		int rowsAffected = preparedStatement.executeUpdate();
-		if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(rootPane, "User added", "Successful", JOptionPane.INFORMATION_MESSAGE);
-                    
-                    FanHomePage hp = new FanHomePage(fan);
-                    
-                    hp.setVisible(true);
-                    dispose();
-                    
-		}else{
-                    JOptionPane.showMessageDialog(rootPane, "User not added", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-
-	} catch (HeadlessException | ClassNotFoundException | SQLException e) {
-		System.out.println(e);
-	} finally {
-		try {
-			if (preparedStatement != null)
-				preparedStatement.close();
-			if (con != null)
-				con.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-    }
-    
-    private boolean hasUppercase(String pass){
-        for(char c : pass.toCharArray()){
-            if(Character.isUpperCase(c)) return true;
+    private boolean hasUppercase(String pass) {
+        for (char c : pass.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                return true;
+            }
         }
         return false;
     }
-    private boolean hasDigit(String pass){
-        for(char c : pass.toCharArray()){
-            if(Character.isDigit(c)) return true;
+
+    private boolean hasDigit(String pass) {
+        for (char c : pass.toCharArray()) {
+            if (Character.isDigit(c)) {
+                return true;
+            }
         }
         return false;
     }
-    
-    private void addListener(){
-        inpUsername.getDocument().addDocumentListener(new DocumentListener(){
+
+    private void addListener() {
+        inpUsername.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 usernameValidation(e);
             }
-            
-            private void usernameValidation(DocumentEvent e){
+
+            private void usernameValidation(DocumentEvent e) {
                 try {
                     String usernameInput = e.getDocument().getText(0, e.getDocument().getLength());
                     if(userWithThatUsernameExists(usernameInput)){
-                        //System.out.println("Treba da se ispise");
-                        usernameCheckerField.setText("Username exists");
+                        usernameCheckerField.setText("exists");
                         signupBtn.setEnabled(false);
                     }else{
                         usernameCheckerField.setText("");
                     }
-                    if(inputsOK()){
-                       signupBtn.setEnabled(true);
+                    if (inputsOK()) {
+                        signupBtn.setEnabled(true);
                     }
                 } catch (BadLocationException ex) {
                     Logger.getLogger(SignupPage.class.getName()).log(Level.SEVERE, null, ex);
@@ -569,28 +535,28 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
             @Override
             public void changedUpdate(DocumentEvent e) {
             }
-            
+
         });
-        
-        inpPhone.getDocument().addDocumentListener(new DocumentListener(){
+
+        inpPhone.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 phoneValidate(e);
             }
-            
-            private void phoneValidate(DocumentEvent e){
+
+            private void phoneValidate(DocumentEvent e) {
                 try {
                     String phoneInput = e.getDocument().getText(0, e.getDocument().getLength());
-                    if(!phoneInput.matches(phonePattern)){
+                    if (!phoneInput.matches(phonePattern)) {
                         phoneCheckerField.setText("invalid format");
                         signupBtn.setEnabled(false);
-                    }else{
+                    } else {
                         phoneCheckerField.setText("");
                     }
-                    if(inputsOK()){
-                       signupBtn.setEnabled(true);
+                    if (inputsOK()) {
+                        signupBtn.setEnabled(true);
                     }
-                    
+
                 } catch (BadLocationException ex) {
                     Logger.getLogger(SignupPage.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -604,33 +570,33 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
             @Override
             public void changedUpdate(DocumentEvent e) {
             }
-            
+
         });
-        
-        inpEmail.getDocument().addDocumentListener(new DocumentListener(){
+
+        inpEmail.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 //System.out.println("Insert update");
                 emailValidate(e);
             }
-            
-            private void emailValidate(DocumentEvent e){
+
+            private void emailValidate(DocumentEvent e) {
                 try {
                     String emailInput = e.getDocument().getText(0, e.getDocument().getLength());
-                    if(!emailInput.matches(emailPattern)){
+                    if (!emailInput.matches(emailPattern)) {
                         emailCheckerField.setText("invalid format");
                         signupBtn.setEnabled(false);
-                    }else{
+                    } else {
                         emailCheckerField.setText("");
                     }
-                    if(inputsOK()){
-                       signupBtn.setEnabled(true);
+                    if (inputsOK()) {
+                        signupBtn.setEnabled(true);
                     }
                 } catch (BadLocationException ex) {
                     Logger.getLogger(SignupPage.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 //System.out.println("Remove update");
@@ -641,38 +607,38 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
             public void changedUpdate(DocumentEvent e) {
                 //System.out.println("Change update");
             }
-            
+
         });
-        
-        inpPassword.getDocument().addDocumentListener(new DocumentListener(){
+
+        inpPassword.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 passwordValidate(e);
             }
 
-            private void passwordValidate(DocumentEvent e){
+            private void passwordValidate(DocumentEvent e) {
                 try {
                     String passInput = e.getDocument().getText(0, e.getDocument().getLength());
-                    if(passInput.length() < 8){
+                    if (passInput.length() < 8) {
                         passCheckerField.setText("Min 8 characters");
                         signupBtn.setEnabled(false);
-                    }else if(!hasUppercase(passInput)){
+                    } else if (!hasUppercase(passInput)) {
                         passCheckerField.setText("1 upper letter min");
                         signupBtn.setEnabled(false);
-                    }else if(!hasDigit(passInput)){
+                    } else if (!hasDigit(passInput)) {
                         passCheckerField.setText("1 digit min");
                         signupBtn.setEnabled(false);
-                    }else{
+                    } else {
                         passCheckerField.setText("");
                     }
-                    if(inputsOK()){
-                       signupBtn.setEnabled(true);
+                    if (inputsOK()) {
+                        signupBtn.setEnabled(true);
                     }
                 } catch (BadLocationException ex) {
                     Logger.getLogger(SignupPage.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 passwordValidate(e);
@@ -681,28 +647,28 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
             @Override
             public void changedUpdate(DocumentEvent e) {
             }
-            
+
         });
-        
-        inpPasswordConf.getDocument().addDocumentListener(new DocumentListener(){
+
+        inpPasswordConf.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 passwordConfValidate(e);
             }
-            
-            private void passwordConfValidate(DocumentEvent e){
+
+            private void passwordConfValidate(DocumentEvent e) {
                 try {
                     String passConfInput = e.getDocument().getText(0, e.getDocument().getLength());
                     char[] pass = inpPassword.getPassword();
                     String password = new String(pass);
-                    if(!passConfInput.equals(password)){
+                    if (!passConfInput.equals(password)) {
                         passConfCheckerField.setText("Doesn't match");
                         signupBtn.setEnabled(false);
-                    }else{
+                    } else {
                         passConfCheckerField.setText("");
                     }
-                    if(inputsOK()){
-                       signupBtn.setEnabled(true);
+                    if (inputsOK()) {
+                        signupBtn.setEnabled(true);
                     }
                 } catch (BadLocationException ex) {
                     Logger.getLogger(SignupPage.class.getName()).log(Level.SEVERE, null, ex);
@@ -717,66 +683,66 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
             @Override
             public void changedUpdate(DocumentEvent e) {
             }
-            
+
         });
-        
-        jcbMonth.addActionListener(new ActionListener(){
+
+        jcbMonth.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
                 String selectedMonth = (String) jcbMonth.getSelectedItem();
                 System.out.println(selectedMonth);
                 Integer selectedYear = (Integer) jcbYear.getSelectedItem();
                 System.out.println(selectedYear);
-                if(selectedYear % 4 == 0 && selectedMonth.equals("February")){
+                if (selectedYear % 4 == 0 && selectedMonth.equals("February")) {
                     jcbDay.removeAllItems();
-                    for(int i = 1; i <= 29; i++){
+                    for (int i = 1; i <= 29; i++) {
                         jcbDay.addItem(i);
                     }
-                }else if(selectedYear % 4 != 0 && selectedMonth.equals("February")){
+                } else if (selectedYear % 4 != 0 && selectedMonth.equals("February")) {
                     jcbDay.removeAllItems();
-                    for(int i = 1; i <= 28; i++){
+                    for (int i = 1; i <= 28; i++) {
                         jcbDay.addItem(i);
                     }
-                }else if(selectedMonth.equals("April") || selectedMonth.equals("June") || selectedMonth.equals("September") || selectedMonth.equals("November")){
+                } else if (selectedMonth.equals("April") || selectedMonth.equals("June") || selectedMonth.equals("September") || selectedMonth.equals("November")) {
                     jcbDay.removeAllItems();
-                    for(int i = 1; i <= 30; i++){
+                    for (int i = 1; i <= 30; i++) {
                         jcbDay.addItem(i);
                     }
-                }else{
+                } else {
                     jcbDay.removeAllItems();
-                    for(int i = 1; i <= 31; i++){
+                    for (int i = 1; i <= 31; i++) {
                         jcbDay.addItem(i);
                     }
                 }
             }
-            
+
         });
-        
-        jcbYear.addActionListener(new ActionListener(){
+
+        jcbYear.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Integer selectedYear = (Integer) jcbYear.getSelectedItem();
                 System.out.println(selectedYear);
                 String selectedMonth = (String) jcbMonth.getSelectedItem();
                 System.out.println(selectedMonth);
-                if(selectedYear % 4 == 0 && selectedMonth.equals("February")){
+                if (selectedYear % 4 == 0 && selectedMonth.equals("February")) {
                     jcbDay.removeAllItems();
-                    for(int i = 1; i <= 29; i++){
+                    for (int i = 1; i <= 29; i++) {
                         jcbDay.addItem(i);
                     }
-                }else if(selectedYear % 4 != 0 && selectedMonth.equals("February")){
+                } else if (selectedYear % 4 != 0 && selectedMonth.equals("February")) {
                     jcbDay.removeAllItems();
-                    for(int i = 1; i <= 28; i++){
+                    for (int i = 1; i <= 28; i++) {
                         jcbDay.addItem(i);
                     }
                 }
             }
         });
     }
-    
-    private boolean inputsOK(){
-        
+
+    private boolean inputsOK() {
+
         String email = inpEmail.getText();
         char[] pass = inpPassword.getPassword();
         String password = new String(pass);
@@ -786,23 +752,25 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
         String name = inpName.getText();
         String surname = inpSurname.getText();
         String phone = inpPhone.getText();
-        
-        if(phone.matches(phonePattern) && email.matches(emailPattern) && password.length() >= 8 && hasUppercase(password) && hasDigit(password) && !userWithThatUsernameExists(usernameInput)
-                && password.equals(passwordConfirm) && !name.equals("") && !surname.equals("") && !usernameInput.equals("")) return true;
+
+        if (phone.matches(phonePattern) && email.matches(emailPattern) && password.length() >= 8 && hasUppercase(password) && hasDigit(password) && !userWithThatUsernameExists(usernameInput)
+                && password.equals(passwordConfirm) && !name.equals("") && !surname.equals("") && !usernameInput.equals("")) {
+            return true;
+        }
         return false;
     }
 
-    private void fillDateFields(){
-        
+    private void fillDateFields() {
+
         int currentYear = LocalDateTime.now().getYear();
         ArrayList<Integer> years = new ArrayList<>();
-        for(int i = currentYear - 18; i > currentYear - 120; i--){
+        for (int i = currentYear - 18; i > currentYear - 120; i--) {
             years.add(i);
         }
-        for(Integer year : years){
+        for (Integer year : years) {
             jcbYear.addItem(year);
         }
-        
+
         ArrayList<String> months = new ArrayList<>();
         months.add("January");
         months.add("February");
@@ -816,22 +784,22 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
         months.add("October");
         months.add("November");
         months.add("December");
-        for(String month : months){
+        for (String month : months) {
             jcbMonth.addItem(month);
         }
-        
+
         ArrayList<Integer> days = new ArrayList<>();
-        for(int i = 1; i <=31; i++){
+        for (int i = 1; i <= 31; i++) {
             days.add(i);
         }
-        for(Integer day : days){
+        for (Integer day : days) {
             jcbDay.addItem(day);
         }
-        
+
     }
 
-    private LocalDate makeBirthday(){
-        
+    private LocalDate makeBirthday() {
+
         LocalDate birthday = null;
         int year = (Integer) jcbYear.getSelectedItem();
         String monthStr = (String) jcbMonth.getSelectedItem();
@@ -877,47 +845,20 @@ public class SignupPage extends javax.swing.JFrame implements DBControllerSignup
                 month = 1;
         }
         int day = (Integer) jcbDay.getSelectedItem();
-        
+
         birthday = LocalDate.of(year, month, day);
-        
+
         return birthday;
     }
 
-    @Override
-    public boolean userWithThatUsernameExists(String usernameInput) {
-        Connection con = null;
-	PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-	try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/prosoft", "root", "root");
-            System.out.println("uspesno povezano sa bazom");
-
-            String query = "select username from navijac";
-            preparedStatement = con.prepareStatement(query);
-            resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                String username = resultSet.getString("username");
-                if (usernameInput.equals(username)) {
-                    System.out.println("Poklapa se");
-                    return true;
-                }
+    private boolean userWithThatUsernameExists(String usernameInput){
+        System.out.println("proveravam...");
+        for(int i = 0; i < allFansUsernames.size(); i++){
+            if(usernameInput.equals(allFansUsernames.get(i))){
+                System.out.println("postoji");
+                return true;
             }
-            return false;
-	} catch (HeadlessException | ClassNotFoundException | SQLException e) {
-            System.out.println(e);
-	} finally {
-            try {
-		if (preparedStatement != null)
-                    preparedStatement.close();
-		if (con != null)
-                    con.close();
-		} catch (SQLException e) {
-                    e.printStackTrace();
-		}
-	}
+        }
         return false;
     }
-
 }

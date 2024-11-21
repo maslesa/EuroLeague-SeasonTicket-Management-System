@@ -4,12 +4,8 @@
  */
 package gui.fan;
 
-import classes.Fan;
-import gui.login.LoginPage;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import controller.Controller;
+import models.Fan;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -22,9 +18,10 @@ import javax.swing.text.BadLocationException;
  * @author Ljubomir
  */
 public class FanPasswordPage extends javax.swing.JFrame {
-    
+
     Fan fan;
-    
+    Controller k = Controller.getInstance();
+
     /**
      * Creates new form FanPasswordPage
      */
@@ -192,15 +189,15 @@ public class FanPasswordPage extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGoBackActionPerformed
 
     private void changeProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeProfileActionPerformed
-        if(inputsOk()){
+        if (inputsOk()) {
             char[] newPassChar = newPassCh.getPassword();
             String newPassword = new String(newPassChar);
-            updatePassword(newPassword);
+            k.updatePassword(newPassword, fan);
             fan.setPassword(newPassword);
             JOptionPane.showMessageDialog(rootPane, "Password changed successfully", "Password changed", JOptionPane.INFORMATION_MESSAGE);
             FanHomePage fhp = new FanHomePage(fan);
             dispose();
-        }else{
+        } else {
             JOptionPane.showMessageDialog(rootPane, "Inputs error", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_changeProfileActionPerformed
@@ -220,29 +217,29 @@ public class FanPasswordPage extends javax.swing.JFrame {
     private javax.swing.JTextField oldPassChecker;
     // End of variables declaration//GEN-END:variables
 
-    public void addListeners(){
-        oldPassCh.getDocument().addDocumentListener(new DocumentListener(){
+    public void addListeners() {
+        oldPassCh.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 checkOldPass(e);
             }
-            
-            private void checkOldPass(DocumentEvent e){
+
+            private void checkOldPass(DocumentEvent e) {
                 try {
                     System.out.println("Pass: " + fan.getPassword());
                     String oldPassInput = e.getDocument().getText(0, e.getDocument().getLength());
                     System.out.println(oldPassInput);
-                    if(!oldPassInput.equals(fan.getPassword())){
+                    if (!oldPassInput.equals(fan.getPassword())) {
                         oldPassChecker.setText("Incorrect");
-                    }else{
+                    } else {
                         oldPassChecker.setText("");
                     }
-                    
+
                 } catch (BadLocationException ex) {
                     Logger.getLogger(FanPasswordPage.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 checkOldPass(e);
@@ -250,28 +247,27 @@ public class FanPasswordPage extends javax.swing.JFrame {
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-            
+
             }
-        
-        
+
         });
-    
-        newPassCh.getDocument().addDocumentListener(new DocumentListener(){
+
+        newPassCh.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 newPassChecker(e);
             }
-            
-            public void newPassChecker(DocumentEvent e){
+
+            public void newPassChecker(DocumentEvent e) {
                 try {
                     String passInput = e.getDocument().getText(0, e.getDocument().getLength());
-                    if(passInput.length() < 8){
+                    if (passInput.length() < 8) {
                         newPassChecker.setText("Min 8 characters");
-                    }else if(!hasUppercase(passInput)){
+                    } else if (!hasUppercase(passInput)) {
                         newPassChecker.setText("1 upper letter min");
-                    }else if(!hasDigit(passInput)){
+                    } else if (!hasDigit(passInput)) {
                         newPassChecker.setText("1 digit min");
-                    }else{
+                    } else {
                         newPassChecker.setText("");
                     }
                 } catch (BadLocationException ex) {
@@ -287,31 +283,30 @@ public class FanPasswordPage extends javax.swing.JFrame {
             @Override
             public void changedUpdate(DocumentEvent e) {
             }
-            
-        
+
         });
-    
+
         newPassConfCh.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 newPassConfChecker(e);
             }
-            
-            private void newPassConfChecker(DocumentEvent e){
+
+            private void newPassConfChecker(DocumentEvent e) {
                 try {
                     String passInput = e.getDocument().getText(0, e.getDocument().getLength());
                     char[] newPassChar = newPassCh.getPassword();
                     String newPassConf = new String(newPassChar);
-                    if(!passInput.equals(newPassConf)){
+                    if (!passInput.equals(newPassConf)) {
                         newPassConfChecker.setText("Doesn't match");
-                    }else{
+                    } else {
                         newPassConfChecker.setText("");
                     }
                 } catch (BadLocationException ex) {
                     Logger.getLogger(FanPasswordPage.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 newPassConfChecker(e);
@@ -322,70 +317,44 @@ public class FanPasswordPage extends javax.swing.JFrame {
             }
         });
     }
-    
-    private boolean hasUppercase(String pass){
-        for(char c : pass.toCharArray()){
-            if(Character.isUpperCase(c)) return true;
+
+    private boolean hasUppercase(String pass) {
+        for (char c : pass.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                return true;
+            }
         }
         return false;
     }
-    private boolean hasDigit(String pass){
-        for(char c : pass.toCharArray()){
-            if(Character.isDigit(c)) return true;
+
+    private boolean hasDigit(String pass) {
+        for (char c : pass.toCharArray()) {
+            if (Character.isDigit(c)) {
+                return true;
+            }
         }
         return false;
     }
-    
-    private boolean inputsOk(){
+
+    private boolean inputsOk() {
         char[] oldPassChar = oldPassCh.getPassword();
         String oldPassword = new String(oldPassChar);
         char[] newPassChar = newPassCh.getPassword();
         String newPassword = new String(newPassChar);
         char[] newPassConfChar = newPassConfCh.getPassword();
         String newPasswordConf = new String(newPassConfChar);
-        
+
         System.out.println("Old pass: " + fan.getPassword());
         System.out.println("Old pass input: " + oldPassword);
         System.out.println("New pass: " + newPassword);
         System.out.println("New pass conf: " + newPasswordConf);
-        
-        if(oldPassword.equals(fan.getPassword()) && newPassword.equals(newPasswordConf)){
+
+        if (oldPassword.equals(fan.getPassword()) && newPassword.equals(newPasswordConf)) {
             System.out.println("Vracam tacno");
             return true;
-        }else{
+        } else {
             System.out.println("Vracam netacno");
             return false;
         }
     }
-
-    private void updatePassword(String newPassword) {
-        Connection con = null;
-        
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/prosoft", "root", "root");
-            System.out.println("Uspesno povezano sa bazom");
-            
-            String sql = "UPDATE navijac SET password = ? WHERE idNavijac = ?";
-            PreparedStatement ps = con.prepareStatement(sql);
-
-            ps.setString(1, newPassword);
-            ps.setInt(2, fan.getIdNavijac());
-        
-            ps.executeUpdate();  
-            
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
-        }finally {
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-    }
-    
-
 }

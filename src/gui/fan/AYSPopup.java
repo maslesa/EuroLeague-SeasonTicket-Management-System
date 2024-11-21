@@ -4,7 +4,7 @@
  */
 package gui.fan;
 
-import classes.Fan;
+import models.Fan;
 import java.awt.*;
 
 /**

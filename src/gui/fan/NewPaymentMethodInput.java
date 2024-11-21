@@ -4,9 +4,10 @@
  */
 package gui.fan;
 
-import classes.Fan;
+import models.Fan;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -56,7 +57,7 @@ public class NewPaymentMethodInput extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add new payment method");
-        setPreferredSize(new java.awt.Dimension(500, 360));
+        setPreferredSize(new java.awt.Dimension(520, 360));
 
         jTextField1.setEditable(false);
         jTextField1.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
@@ -241,8 +242,8 @@ public class NewPaymentMethodInput extends javax.swing.JDialog {
                     //OVO FIXUJ
                     if(expDateInput.length() == 2 && allDigits(expDateInput)){
                         String newInput = expDateInput + "/";
-                        expDate.setText(newInput);
-                    }else if(expDateInput.length() == 5 && allDigits(expDateInput)){
+                        SwingUtilities.invokeLater(() -> expDate.setText(newInput));
+                    }else if(expDateInput.length() == 5 && allDigits(expDateInput.replace("/", ""))){
                         expdateChecker.setText("");
                         cvvField.requestFocus();
                     }else{
@@ -263,6 +264,35 @@ public class NewPaymentMethodInput extends javax.swing.JDialog {
             }
         });
         
+        cvvField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                cvvChecker(e);
+            }
+            
+            private void cvvChecker(DocumentEvent e){
+                try {
+                    String cardNum = e.getDocument().getText(0, e.getDocument().getLength());
+                    if(cardNum.length() != 3 || !allDigits(cardNum)){
+                        cvvChecker.setText("invalid");
+                    }else{
+                        cvvChecker.setText("");
+                    }
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(NewPaymentMethodInput.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                cvvChecker(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+            
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -5,23 +5,24 @@
 package gui.login;
 
 
-import classes.Fan;
+import models.Fan;
+import controller.Controller;
 import gui.club.ClubHomePage;
 import gui.fan.FanHomePage;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import db.DBControllerLogin;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 /**
  *
  * @author Ljubomir
  */
-public class LoginPage extends javax.swing.JFrame implements DBControllerLogin{
+public class LoginPage extends javax.swing.JFrame{
     
     Fan fan = new Fan("", "", "", "", LocalDate.MIN, "", "");
+    Controller k = Controller.getInstance();
     
     /**
      * Creates new form LoginPage
@@ -161,11 +162,11 @@ public class LoginPage extends javax.swing.JFrame implements DBControllerLogin{
         char[] pass = inpPassword.getPassword();
         String inputPassword = new String(pass);
         
-        if(userExistsLogin(inputUsername, inputPassword)){
-            fillVariables(inputUsername);
+        if(k.userExistsLogin(inputUsername, inputPassword)){
+            fan = k.fillVariables(inputUsername);
             FanHomePage hp = new FanHomePage(fan);
             dispose();
-        }else if(ClubExistsLogin(inputUsername, inputPassword)){
+        }else if(k.ClubExistsLogin(inputUsername, inputPassword)){
             ClubHomePage chp = new ClubHomePage();
             dispose();
         }else{
@@ -185,89 +186,5 @@ public class LoginPage extends javax.swing.JFrame implements DBControllerLogin{
     private javax.swing.JLabel jLabel3;
     private javax.swing.JButton loginBtn;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public boolean userExistsLogin(String usernameInput, String passwordInput) {
-        Connection con = null;
-        
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/prosoft", "root", "root");
-            System.out.println("Uspesno povezano sa bazom");
-            
-            PreparedStatement ps = con.prepareStatement("SELECT username, password FROM navijac");
-            ResultSet rs = ps.executeQuery();
-            
-            while(rs.next()){
-                String username = rs.getString("username");
-                String password = rs.getString("password");
-                if (usernameInput.equals(username) && passwordInput.equals(password)) {
-                    return true;
-		}
-            }
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return false;
-    }
-
-    @Override
-    public boolean ClubExistsLogin(String usernameInput, String passwordInput) {
-        Connection con = null;
-        
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/prosoft", "root", "root");
-            System.out.println("Uspesno povezano sa bazom");
-            
-            PreparedStatement ps = con.prepareStatement("SELECT username, password FROM klub");
-            ResultSet rs = ps.executeQuery();
-            
-            while(rs.next()){
-                String username = rs.getString("username");
-                String password = rs.getString("password");
-                if (usernameInput.equals(username) && passwordInput.equals(password)) {
-                    return true;
-		}
-            }
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return false;
-    }
-
-    public void fillVariables(String username){
-        Connection con = null;
-        
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/prosoft", "root", "root");
-            System.out.println("Uspesno povezano sa bazom");
-            
-            String query = "SELECT * FROM navijac WHERE username = \"" + username + "\""; 
-            System.out.println(query);
-            
-            PreparedStatement ps = con.prepareStatement(query);
-            ResultSet rs = ps.executeQuery();
-            
-            while(rs.next()){
-                fan.setIdNavijac(rs.getInt("idNavijac"));
-                fan.setName(rs.getString("name"));
-                fan.setSurname(rs.getString("surname"));
-                fan.setUsername(rs.getString("username"));
-                fan.setEmail(rs.getString("email"));
-                Date birthdayDate = rs.getDate("birthday");
-                LocalDate birthday = birthdayDate.toLocalDate();
-                fan.setBirthday(birthday);
-                fan.setPhone(rs.getString("phone"));
-                fan.setPassword(rs.getString("password"));
-                System.out.println("id:" + fan.getIdNavijac() + " name:" + fan.getName() + "surname:" + fan.getSurname() + "username:" + username);
-            }
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 }
 

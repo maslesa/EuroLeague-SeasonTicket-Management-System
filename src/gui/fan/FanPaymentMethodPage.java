@@ -4,7 +4,7 @@
  */
 package gui.fan;
 
-import classes.Fan;
+import models.Fan;
 import gui.login.LoginPage;
 import java.sql.*;
 import java.util.logging.Level;
