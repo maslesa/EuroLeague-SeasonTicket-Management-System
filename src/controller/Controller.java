@@ -8,6 +8,10 @@ import models.Fan;
 import db.DBBroker;
 import gui.login.SignupPage;
 import java.util.List;
+import models.Account;
+import models.CardType;
+import models.Club;
+import models.Season;
 
 /**
  *
@@ -55,6 +59,22 @@ public class Controller {
 
     public void updateDatasInBase(String newName, String newSurname, String newUsername, String newEmail, String newPhone, Fan fan) {
         dbbroker.updateDatasInBase(newName, newSurname, newUsername, newEmail, newPhone, fan);
+    }
+
+    public List<Account> getAllRacuni(Fan fan) {
+        return dbbroker.getAllRacuni(fan);
+    }
+
+    public List<Season> getAllSeasons() {
+        return dbbroker.getAllSeasons();
+    }
+
+    public List<Club> getAllClubs() {
+        return dbbroker.getAllClubs();
+    }
+
+    public List<CardType> getAllCardTypes() {
+        return dbbroker.getAllCardTypes();
     }
 
 

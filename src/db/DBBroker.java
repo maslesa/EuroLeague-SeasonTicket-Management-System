@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import models.Account;
+import models.CardType;
+import models.Club;
+import models.Season;
 
 /**
  *
@@ -195,6 +199,110 @@ public class DBBroker {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+    }
+
+    public List<Account> getAllRacuni(Fan fan) {
+        List<Account> accounts = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM racun WHERE idNavijac = ?";
+            
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, fan.getIdNavijac());
+            
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()){
+                int idRacuna = rs.getInt("idRacun");
+                String brojRacuna = rs.getString("brojRacuna");
+                String datumIsteka = rs.getString("datumIsteka");
+                String cvv = rs.getString("cvv");
+                double stanje = rs.getDouble("stanje");
+   
+                Account newAcc = new Account(idRacuna, brojRacuna, datumIsteka, cvv, stanje);
+                
+                accounts.add(newAcc);
+                
+            }
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return accounts;
+    }
+
+    public List<Season> getAllSeasons() {
+        List<Season> sezone = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM sezona";
+            
+            Statement st = Konekcija.getInstance().getCon().createStatement();
+            
+            ResultSet rs = st.executeQuery(query);
+            while(rs.next()){
+                int id = rs.getInt("idsezona");
+                String naziv = rs.getString("naziv");
+                
+                Season newSeason = new Season(id, naziv);
+                
+                sezone.add(newSeason);
+                
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return sezone;
+    }
+
+    public List<Club> getAllClubs() {
+        List<Club> clubs = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM klub";
+            
+            Statement st = Konekcija.getInstance().getCon().createStatement();
+            
+            ResultSet rs = st.executeQuery(query);
+            while(rs.next()){
+                int id = rs.getInt("idKlub");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                String fullName = rs.getString("fullName");
+                
+                Club newClub = new Club(id, username, password, fullName);
+                
+                clubs.add(newClub);
+                
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return clubs;
+    }
+
+    public List<CardType> getAllCardTypes() {
+        List<CardType> cardTypes = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM tipkarte";
+            
+            Statement st = Konekcija.getInstance().getCon().createStatement();
+            
+            ResultSet rs = st.executeQuery(query);
+            while(rs.next()){
+                int id = rs.getInt("idTipKarte");
+                String naziv = rs.getString("naziv");
+                double popust = rs.getDouble("popust");
+                
+                CardType newCardType = new CardType(id, naziv, popust);
+                
+                cardTypes.add(newCardType);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return cardTypes;
     }
 
 }

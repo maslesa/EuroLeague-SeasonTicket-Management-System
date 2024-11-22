@@ -407,11 +407,10 @@ public class SignupPage extends javax.swing.JFrame {
         char[] pass = inpPassword.getPassword();
         String password = new String(pass);
         
-        fan = new Fan(name, surname, username, email, birthday, phone, password);
-
         if (!inputsOK()) {
             JOptionPane.showMessageDialog(rootPane, "Inputs error", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
+            fan = new Fan(name, surname, username, email, birthday, phone, password);
             if(k.addNewNavijac(fan)){
                 this.dispose();
                 FanHomePage fhp = new FanHomePage(fan);

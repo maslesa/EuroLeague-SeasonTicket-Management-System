@@ -11,14 +11,23 @@ package models;
 public class Club {
     
     int idKlub;
-    String naziv;
+    String username;
     String sifra;
-    String email;
+    String fullName;
+
+    public Club(int idKlub, String naziv, String sifra, String email) {
+        this.idKlub = idKlub;
+        this.username = naziv;
+        this.sifra = sifra;
+        this.fullName = email;
+    }
+    
+    
 
     public Club(String naziv, String sifra, String email) {
-        this.naziv = naziv;
+        this.username = naziv;
         this.sifra = sifra;
-        this.email = email;
+        this.fullName = email;
     }
 
     public int getIdKlub() {
@@ -30,11 +39,11 @@ public class Club {
     }
 
     public String getNaziv() {
-        return naziv;
+        return username;
     }
 
     public void setNaziv(String naziv) {
-        this.naziv = naziv;
+        this.username = naziv;
     }
 
     public String getSifra() {
@@ -45,12 +54,17 @@ public class Club {
         this.sifra = sifra;
     }
 
-    public String getEmail() {
-        return email;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    @Override
+    public String toString() {
+        return fullName;
     }
     
     

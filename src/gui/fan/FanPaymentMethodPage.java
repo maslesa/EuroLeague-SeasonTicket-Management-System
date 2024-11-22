@@ -4,12 +4,15 @@
  */
 package gui.fan;
 
+import controller.Controller;
 import models.Fan;
 import gui.login.LoginPage;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
 import javax.swing.table.DefaultTableModel;
+import models.Account;
 
 /**
  *
@@ -21,6 +24,7 @@ public class FanPaymentMethodPage extends javax.swing.JFrame {
      * Creates new form FanPaymentMethodPage
      */
     Fan fan;
+    Controller k = Controller.getInstance();
     
     public FanPaymentMethodPage(Fan fan) {
         initComponents();
@@ -28,7 +32,10 @@ public class FanPaymentMethodPage extends javax.swing.JFrame {
         setVisible(true);
         setResizable(false);
         this.fan = fan;
-        fillTable();
+        List<Account> accounts = new ArrayList<>();
+        accounts = k.getAllRacuni(fan);
+        AccountsTableModel atm = new AccountsTableModel(accounts);
+        jTableAccounts.setModel(atm);
     }
 
     /**
@@ -43,7 +50,7 @@ public class FanPaymentMethodPage extends javax.swing.JFrame {
         btnGoBack = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        table = new javax.swing.JTable();
+        jTableAccounts = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -61,9 +68,9 @@ public class FanPaymentMethodPage extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Payment methods");
 
-        table.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        table.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        table.setModel(new javax.swing.table.DefaultTableModel(
+        jTableAccounts.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jTableAccounts.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTableAccounts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -71,8 +78,8 @@ public class FanPaymentMethodPage extends javax.swing.JFrame {
 
             }
         ));
-        table.setEnabled(false);
-        jScrollPane1.setViewportView(table);
+        jTableAccounts.setEnabled(false);
+        jScrollPane1.setViewportView(jTableAccounts);
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButton1.setText("Add new payment method");
@@ -132,45 +139,7 @@ public class FanPaymentMethodPage extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable table;
+    private javax.swing.JTable jTableAccounts;
     // End of variables declaration//GEN-END:variables
-
-    public void fillTable(){
-        Connection con = null;
-        
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/prosoft", "root", "root");
-            System.out.println("Uspesno povezano sa bazom");
-            
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM racun WHERE idNavijac = ?");
-            ps.setInt(1, fan.getIdNavijac());
-            
-            ResultSet rs = ps.executeQuery();
-            
-            String[] columnNames = {"AccountID", "AccountNumber", "Balance"};
-            
-            DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-            while (rs.next()) {
-                Object[] rowData = new Object[3];
-                rowData[0] = rs.getObject("idRacun");
-                rowData[1] = rs.getObject("brojRacuna");
-                rowData[2] = rs.getObject("stanje");
-                model.addRow(rowData);
-            }
-            table.setModel(model);
-            
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
-        }finally {
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-    }
 
 }
