@@ -8,7 +8,7 @@ import models.Fan;
 import db.DBBroker;
 import gui.login.SignupPage;
 import java.util.List;
-import models.Account;
+import models.Card;
 import models.CardType;
 import models.Club;
 import models.Season;
@@ -61,10 +61,6 @@ public class Controller {
         dbbroker.updateDatasInBase(newName, newSurname, newUsername, newEmail, newPhone, fan);
     }
 
-    public List<Account> getAllRacuni(Fan fan) {
-        return dbbroker.getAllRacuni(fan);
-    }
-
     public List<Season> getAllSeasons() {
         return dbbroker.getAllSeasons();
     }
@@ -77,5 +73,20 @@ public class Controller {
         return dbbroker.getAllCardTypes();
     }
 
+    public Club fillVariablesClub(String inputUsername) {
+        return dbbroker.fillVariablesClub(inputUsername);
+    }
+
+    public boolean insertNewCard(Card newCard) {
+        return dbbroker.insertNewCard(newCard);
+    }
+
+    public List<Card> getAllCards(Club club) {
+        return dbbroker.getAllCards(club);
+    }
+
+    public List<Card> getAllCardsNew(Club club) {
+        return dbbroker.getAllCardsNew(club);
+    }
 
 }

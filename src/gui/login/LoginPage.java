@@ -9,12 +9,9 @@ import models.Fan;
 import controller.Controller;
 import gui.club.ClubHomePage;
 import gui.fan.FanHomePage;
-import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import models.Club;
 /**
  *
  * @author Ljubomir
@@ -22,6 +19,7 @@ import java.time.LocalDate;
 public class LoginPage extends javax.swing.JFrame{
     
     Fan fan = new Fan("", "", "", "", LocalDate.MIN, "", "");
+    Club club = new Club(0, "", "", "", "", "");
     Controller k = Controller.getInstance();
     
     /**
@@ -139,7 +137,7 @@ public class LoginPage extends javax.swing.JFrame{
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
                     .addComponent(inpPassword))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addComponent(loginBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33))
         );
@@ -167,7 +165,8 @@ public class LoginPage extends javax.swing.JFrame{
             FanHomePage hp = new FanHomePage(fan);
             dispose();
         }else if(k.ClubExistsLogin(inputUsername, inputPassword)){
-            ClubHomePage chp = new ClubHomePage();
+            club = k.fillVariablesClub(inputUsername);
+            ClubHomePage chp = new ClubHomePage(club);
             dispose();
         }else{
             JOptionPane.showMessageDialog(rootPane, "Incorrect datas", "Error", JOptionPane.ERROR_MESSAGE);

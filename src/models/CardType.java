@@ -12,12 +12,10 @@ public class CardType {
     
     int idCardType;
     String name;
-    double popust;
 
-    public CardType(int idCardType, String name, double popust) {
+    public CardType(int idCardType, String name) {
         this.idCardType = idCardType;
         this.name = name;
-        this.popust = popust;
     }
 
     public int getIdCardType() {
@@ -34,14 +32,6 @@ public class CardType {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public double getPopust() {
-        return popust;
-    }
-
-    public void setPopust(double popust) {
-        this.popust = popust;
     }
 
     @Override
