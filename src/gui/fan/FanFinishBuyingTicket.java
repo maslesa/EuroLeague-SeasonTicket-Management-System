@@ -65,6 +65,8 @@ public class FanFinishBuyingTicket extends javax.swing.JFrame {
         jButtonBuy = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Sport tickets shop | Finish buying season ticket");
+        setResizable(false);
 
         jTextField1.setEditable(false);
         jTextField1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -229,7 +231,7 @@ public class FanFinishBuyingTicket extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGoBackActionPerformed
 
     private void jButtonBuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuyActionPerformed
-        if(k.insertCards(card, fan, numOfCards)){
+        if(k.insertCards(card, fan, numOfCards) && k.updateCardVacances(card, numOfCards)){
             JOptionPane.showMessageDialog(rootPane, "Buying season ticket/s was successfully", "Successfull", JOptionPane.INFORMATION_MESSAGE);
             FanHomePage fhp = new FanHomePage(fan);
             dispose();

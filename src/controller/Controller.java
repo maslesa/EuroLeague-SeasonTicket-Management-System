@@ -110,4 +110,12 @@ public class Controller {
         return dbbroker.getAllSeasonCards(fan);
     }
 
+    public boolean updateCardVacances(Card card, int numOfCards) {
+        return dbbroker.updateCardVacances(card, numOfCards);
+    }
+
+    public List<Fan> getAllFansForClub(Club club) {
+        return dbbroker.getAllFansForClub(club);
+    }
+
 }

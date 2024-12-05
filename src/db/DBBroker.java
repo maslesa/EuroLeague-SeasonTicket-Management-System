@@ -380,13 +380,13 @@ public class DBBroker {
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
             ps.setInt(1, club.getIdKlub());
             ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 int idSeason = rs.getInt("s.idsezona");
                 String name = rs.getString("s.naziv");
                 Season s = new Season(idSeason, name);
                 seasons.add(s);
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -401,7 +401,7 @@ public class DBBroker {
             ps.setInt(1, club.getIdKlub());
             ps.setInt(2, season.getIdSezona());
             ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 int idCardType = rs.getInt("tk.idTipKarte");
                 String nameCardType = rs.getString("tk.naziv");
                 CardType cardtype = new CardType(idCardType, nameCardType);
@@ -421,18 +421,18 @@ public class DBBroker {
             ps.setInt(2, idSezona);
             ps.setInt(3, idCardType);
             ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 int idCard = rs.getInt("k.idkarta");
                 double price = rs.getDouble("k.cena");
                 int vacances = rs.getInt("k.slobodnaMesta");
                 String clubName = rs.getString("kl.fullName");
                 String seasonName = rs.getString("s.naziv");
                 String cardTypeName = rs.getString("tk.naziv");
-                
+
                 Card card = new Card(idCard, price, vacances, clubName, seasonName, cardTypeName);
-                
+
                 return card;
-                
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
@@ -441,27 +441,29 @@ public class DBBroker {
     }
 
     public boolean insertCards(Card card, Fan fan, int numOfCards) {
-        
+
         try {
             String query = "INSERT INTO sezonskakarta(idKarta, idNavijac) values (?, ?)";
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
             ps.setInt(1, card.getIdCard());
             ps.setInt(2, fan.getIdNavijac());
             int ra = 0;
-            
-            for(int i = 0; i < numOfCards; i++){            
+
+            for (int i = 0; i < numOfCards; i++) {
                 ra += ps.executeUpdate();
             }
-            
-            if(ra > 0) return true;
+
+            if (ra > 0) {
+                return true;
+            }
             return false;
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return false;
-        
+
     }
 
     public List<SeasonCard> getAllSeasonCards(Fan fan) {
@@ -471,24 +473,71 @@ public class DBBroker {
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
             ps.setInt(1, fan.getIdNavijac());
             ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 int idSeasonCard = rs.getInt("sk.idSezonskaKarta");
                 String clubName = rs.getString("kl.fullName");
                 String seasonName = rs.getString("s.naziv");
                 String cardType = rs.getString("tk.naziv");
                 String qrCode = rs.getString("sk.qrCode");
-                
+
                 SeasonCard seasonCard = new SeasonCard(idSeasonCard, qrCode, clubName, seasonName, cardType);
-                
+
                 seasonCards.add(seasonCard);
-                
+
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return seasonCards;
     }
-    
+
+    public boolean updateCardVacances(Card card, int numOfCards) {
+
+        try {
+            int newVacances = card.getVacances() - numOfCards;
+
+            String query = "UPDATE karta SET slobodnaMesta = ? WHERE idKarta = ?";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, newVacances);
+            ps.setInt(2, card.getIdCard());
+            int ra = ps.executeUpdate();
+            if (ra > 0) {
+                return true;
+            }
+            return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+
+    }
+
+    public List<Fan> getAllFansForClub(Club club) {
+        List<Fan> fans = new ArrayList<>();
+        try {
+            String query = "SELECT n.idNavijac, n.name, n.surname, n.username, n.email, n.phone, s.naziv, tk.naziv FROM navijac n JOIN sezonskakarta sk ON (n.idNavijac = sk.idNavijac) JOIN karta k ON (sk.idKarta = k.idkarta) JOIN sezona s ON (k.idSezona = s.idsezona) JOIN tipkarte tk ON (k.idTipKarta = tk.idTipKarte) WHERE k.idKlub = ? ORDER BY s.naziv";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, club.getIdKlub());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int idFan = rs.getInt("n.idNavijac");
+                String nameFan = rs.getString("n.name");
+                String surnameFan = rs.getString("n.surname");
+                String usernameFan = rs.getString("n.username");
+                String emailFan = rs.getString("n.email");
+                String phoneFan = rs.getString("n.phone");
+                String nameSeason = rs.getString("s.naziv");
+                String nameCardType = rs.getString("tk.naziv");
+                Fan fan = new Fan(idFan, nameFan, surnameFan, usernameFan, emailFan, phoneFan, nameSeason, nameCardType);
+                fans.add(fan);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return fans;
+        
+    }
+
 }

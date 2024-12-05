@@ -85,6 +85,11 @@ public class ClubHomePage extends javax.swing.JFrame {
         jMenu2.setText("Fans");
 
         jMenuItem4.setText("View all fans");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem4);
 
         jMenuBar1.add(jMenu2);
@@ -171,6 +176,11 @@ public class ClubHomePage extends javax.swing.JFrame {
         ClubAllSeasonTickets ast = new ClubAllSeasonTickets(club);
         dispose();
     }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        ClubAllFans caf = new ClubAllFans(club);
+        dispose();
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;

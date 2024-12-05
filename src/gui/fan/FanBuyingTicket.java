@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import models.Fan;
 import java.util.*;
+import javax.swing.JOptionPane;
 import models.*;
 
 /**
@@ -72,11 +73,12 @@ public class FanBuyingTicket extends javax.swing.JFrame {
         jComboBoxCardType = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         jComboBoxNumberOfCards = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        jButtonNext = new javax.swing.JButton();
         btnGoBack = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sport tickets shop | Buying season ticket");
+        setResizable(false);
 
         jTextField1.setEditable(false);
         jTextField1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -111,10 +113,10 @@ public class FanBuyingTicket extends javax.swing.JFrame {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel5.setText("Number of cards:");
 
-        jButton1.setText("Next page");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonNext.setText("Next page");
+        jButtonNext.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonNextActionPerformed(evt);
             }
         });
 
@@ -148,7 +150,7 @@ public class FanBuyingTicket extends javax.swing.JFrame {
                             .addComponent(jComboBoxClub, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(174, 174, 174)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButtonNext, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(31, 31, 31)
                         .addComponent(btnGoBack, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -190,7 +192,7 @@ public class FanBuyingTicket extends javax.swing.JFrame {
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jComboBoxNumberOfCards, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonNext, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(41, 41, 41))
         );
 
@@ -206,19 +208,23 @@ public class FanBuyingTicket extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_btnGoBackActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNextActionPerformed
         Club club = (Club) jComboBoxClub.getSelectedItem();
         Season season = (Season) jComboBoxSeasons.getSelectedItem();
         CardType cardType = (CardType) jComboBoxCardType.getSelectedItem();
         Integer numOfCards = (Integer) jComboBoxNumberOfCards.getSelectedItem();
-        Card card = k.selectCardByParameters(club.getIdKlub(), season.getIdSezona(), cardType.getIdCardType());
-        FanFinishBuyingTicket fbt = new FanFinishBuyingTicket(fan, card, numOfCards);
-        dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+        if (club == null || season == null || cardType == null) {
+            JOptionPane.showMessageDialog(rootPane, "You have select all parameters", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Card card = k.selectCardByParameters(club.getIdKlub(), season.getIdSezona(), cardType.getIdCardType());
+            FanFinishBuyingTicket fbt = new FanFinishBuyingTicket(fan, card, numOfCards);
+            dispose();
+        }
+    }//GEN-LAST:event_jButtonNextActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGoBack;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonNext;
     private javax.swing.JComboBox<CardType> jComboBoxCardType;
     private javax.swing.JComboBox<Club> jComboBoxClub;
     private javax.swing.JComboBox<Integer> jComboBoxNumberOfCards;
@@ -262,5 +268,29 @@ public class FanBuyingTicket extends javax.swing.JFrame {
                 }
             }
         });
+
+        jComboBoxCardType.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Club club = (Club) jComboBoxClub.getSelectedItem();
+                Season season = (Season) jComboBoxSeasons.getSelectedItem();
+                CardType cardType = (CardType) jComboBoxCardType.getSelectedItem();
+                if (jComboBoxSeasons.getSelectedItem() != null && jComboBoxCardType.getSelectedItem() != null) {
+                    jComboBoxNumberOfCards.removeAllItems();
+                    Card card = k.selectCardByParameters(club.getIdKlub(), season.getIdSezona(), cardType.getIdCardType());
+                    if (card.getVacances() < 10) {
+                        for (int i = 1; i <= card.getVacances(); i++) {
+                            jComboBoxNumberOfCards.addItem(i);
+                        }
+                    } else {
+                        for (int i = 1; i <= 10; i++) {
+                            jComboBoxNumberOfCards.addItem(i);
+                        }
+                    }
+                }
+            }
+
+        });
+
     }
 }
