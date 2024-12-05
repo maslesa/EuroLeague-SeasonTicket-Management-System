@@ -7,7 +7,12 @@ package gui.club;
 import controller.Controller;
 import models.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 
 /**
  *
@@ -37,6 +42,8 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
             jcbCardType.addItem(ct);
         }
         setLocationRelativeTo(null);
+        jbtnDefine.setEnabled(false);
+        addListener();
         setVisible(true);
     }
 
@@ -187,9 +194,9 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
         int vacances = Integer.parseInt(txtVacances.getText());
         int price = Integer.parseInt(txtPrice.getText());
         Card newCard = new Card(price, vacances, season.getIdSezona(), club.getIdKlub(), cardType.getIdCardType());
-        
+
         if (cardAlreadyExists(cards, newCard)) {
-            JOptionPane.showConfirmDialog(rootPane, "You have already defined that card! Do you want update it?", "Card already exists", JOptionPane.YES_NO_OPTION);
+            JOptionPane.showConfirmDialog(rootPane, "You have already defined that card! Do you want update it?", "Card already exists", JOptionPane.ERROR_MESSAGE);
         } else {
 
             if (k.insertNewCard(newCard)) {
@@ -218,9 +225,81 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private boolean cardAlreadyExists(List<Card> cards, Card newCard) {
-        for(int i = 0; i < cards.size(); i++){
-            if(cards.get(i).getIdSeason() == newCard.getIdSeason() && cards.get(i).getIdCardType() == newCard.getIdCardType()) return true;
+        for (int i = 0; i < cards.size(); i++) {
+            if (cards.get(i).getIdSeason() == newCard.getIdSeason() && cards.get(i).getIdCardType() == newCard.getIdCardType()) {
+                return true;
+            }
         }
         return false;
     }
+
+    private void addListener() {
+        txtVacances.getDocument().addDocumentListener(new DocumentListener() {
+
+            private boolean vacanceValidation(DocumentEvent e) {
+                try {
+                    String vacanceInput = e.getDocument().getText(0, e.getDocument().getLength());
+                    for (char c : vacanceInput.toCharArray()) {
+                        if (!Character.isDigit(c)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(ClubNewSeasonTicketPage.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return true;
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                jbtnDefine.setEnabled(vacanceValidation(e));
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                jbtnDefine.setEnabled(vacanceValidation(e));
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+
+        });
+        
+        txtPrice.getDocument().addDocumentListener(new DocumentListener(){
+            
+            private boolean priceValidation(DocumentEvent e){
+                try {
+                    String priceInput = e.getDocument().getText(0, e.getDocument().getLength());
+                    for (char c : priceInput.toCharArray()) {
+                        if (!Character.isDigit(c)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(ClubNewSeasonTicketPage.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return true;
+            }
+            
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                jbtnDefine.setEnabled(priceValidation(e));
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                jbtnDefine.setEnabled(priceValidation(e));
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+            
+        });
+        
+    }
+
 }

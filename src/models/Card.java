@@ -18,8 +18,20 @@ public class Card {
     int idCardType;
     
     //pomocne
+    String clubName;
     String seasonName;
     String cardTypeName;
+
+    public Card(int idCard, double price, int vacances, String clubName, String seasonName, String cardTypeName) {
+        this.idCard = idCard;
+        this.price = price;
+        this.vacances = vacances;
+        this.clubName = clubName;
+        this.seasonName = seasonName;
+        this.cardTypeName = cardTypeName;
+    }
+    
+    
 
     public Card(int idCard, double price, int vacances, String seasonName, String cardTypeName) {
         this.idCard = idCard;
@@ -109,6 +121,14 @@ public class Card {
 
     public void setCardTypeName(String cardTypeName) {
         this.cardTypeName = cardTypeName;
+    }
+
+    public String getClubName() {
+        return clubName;
+    }
+
+    public void setClubName(String clubName) {
+        this.clubName = clubName;
     }
 
 }

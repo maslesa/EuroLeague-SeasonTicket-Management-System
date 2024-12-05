@@ -12,6 +12,7 @@ import models.Card;
 import models.CardType;
 import models.Club;
 import models.Season;
+import models.SeasonCard;
 
 /**
  *
@@ -87,6 +88,26 @@ public class Controller {
 
     public List<Card> getAllCardsNew(Club club) {
         return dbbroker.getAllCardsNew(club);
+    }
+
+    public List<Season> getPossibleSeasons(Club club) {
+        return dbbroker.getPossibleSeasons(club);
+    }
+
+    public List<CardType> getPossibleCardTypes(Club club, Season season) {
+        return dbbroker.getPossibleCardTypes(club, season);
+    }
+
+    public Card selectCardByParameters(int idKlub, int idSezona, int idCardType) {
+        return dbbroker.selectCardByParameters(idKlub, idSezona, idCardType);
+    }
+
+    public boolean insertCards(Card card, Fan fan, int numOfCards) {
+        return dbbroker.insertCards(card, fan, numOfCards);
+    }
+
+    public List<SeasonCard> getAllSeasonCards(Fan fan) {
+        return dbbroker.getAllSeasonCards(fan);
     }
 
 }

@@ -5,8 +5,7 @@
         <group>
             <file>file:/D:/ProjektovanjeSoftvera/ProdajaSezonskihKarata/src/db/DBBroker.java</file>
             <file>file:/D:/ProjektovanjeSoftvera/ProdajaSezonskihKarata/src/controller/Controller.java</file>
-            <file>file:/D:/ProjektovanjeSoftvera/ProdajaSezonskihKarata/src/gui/club/ClubNewSeasonTicketPage.java</file>
-            <file>file:/D:/ProjektovanjeSoftvera/ProdajaSezonskihKarata/src/gui/club/ClubHomePage.java</file>
+            <file>file:/D:/ProjektovanjeSoftvera/ProdajaSezonskihKarata/src/gui/fan/FanHomePage.java</file>
         </group>
     </open-files>
 </project-private>

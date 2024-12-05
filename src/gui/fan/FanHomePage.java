@@ -14,11 +14,12 @@ import java.time.LocalDate;
  * @author Ljubomir
  */
 public class FanHomePage extends javax.swing.JFrame {
-    
+
     Fan fan;
 
     /**
      * Creates new form HomePage
+     *
      * @param fan
      */
     public FanHomePage(Fan fan) {
@@ -108,8 +109,18 @@ public class FanHomePage extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         jMenu4.setText("My season tickets");
+        jMenu4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu4ActionPerformed(evt);
+            }
+        });
 
         jMenuItem8.setText("View my tickets");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem8);
 
         jMenuBar1.add(jMenu4);
@@ -169,6 +180,16 @@ public class FanHomePage extends javax.swing.JFrame {
         FanBuyingTicket fbt = new FanBuyingTicket(fan);
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jMenu4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu4ActionPerformed
+        FanAllTickets fat = new FanAllTickets(fan);
+        dispose();
+    }//GEN-LAST:event_jMenu4ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        FanAllTickets fat = new FanAllTickets(fan);
+        dispose();
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
