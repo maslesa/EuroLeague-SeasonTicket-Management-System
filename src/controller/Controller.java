@@ -139,4 +139,8 @@ public class Controller {
         return dbbroker.insertNewMatch(newMatch);
     }
 
+    public List<Match> getAllMatches(Club club) {
+        return dbbroker.getAllMatches(club);
+    }
+
 }

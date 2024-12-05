@@ -10,6 +10,7 @@ import java.awt.HeadlessException;
 import java.sql.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -521,7 +522,7 @@ public class DBBroker {
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
             ps.setInt(1, club.getIdKlub());
             ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 int idFan = rs.getInt("n.idNavijac");
                 String nameFan = rs.getString("n.name");
                 String surnameFan = rs.getString("n.surname");
@@ -537,7 +538,7 @@ public class DBBroker {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
         return fans;
-        
+
     }
 
     public boolean updateClubDatas(String newUsernamem, String newEmailString, String newPhone, Club club) {
@@ -549,7 +550,9 @@ public class DBBroker {
             ps.setString(3, newPhone);
             ps.setInt(4, club.getIdKlub());
             int ra = ps.executeUpdate();
-            if(ra > 0) return true;
+            if (ra > 0) {
+                return true;
+            }
             return false;
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
@@ -563,22 +566,22 @@ public class DBBroker {
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
             ps.setInt(1, club.getIdKlub());
             ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 int id = rs.getInt("idKlub");
                 String username = rs.getString("username");
                 String fullName = rs.getString("fullName");
                 String password = rs.getString("password");
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
-                
+
                 Club newClub = new Club(id, username, password, fullName, email, phone);
-                
+
                 return newClub;
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return null;
     }
 
@@ -591,9 +594,11 @@ public class DBBroker {
             ps.setInt(3, club.getIdKlub());
             ps.setInt(4, card.getIdSeason());
             ps.setInt(5, card.getIdCardType());
-            
+
             int ra = ps.executeUpdate();
-            if(ra > 0) return true;
+            if (ra > 0) {
+                return true;
+            }
             return false;
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
@@ -609,7 +614,9 @@ public class DBBroker {
             ps.setInt(2, vacances);
             ps.setInt(3, card.getIdCard());
             int ra = ps.executeUpdate();
-            if(ra > 0) return true;
+            if (ra > 0) {
+                return true;
+            }
             return false;
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
@@ -628,12 +635,40 @@ public class DBBroker {
             ps.setInt(4, newMatch.getIdGuest());
             ps.setInt(5, newMatch.getIdSeason());
             int ra = ps.executeUpdate();
-            if(ra > 0) return true;
+            if (ra > 0) {
+                return true;
+            }
             return false;
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+
+    public List<Match> getAllMatches(Club club) {
+        List<Match> matches = new ArrayList<>();
+        try {
+            String query = "SELECT u.idUtakmica, u.fullName, u.dateTime, kd.fullName, kg.fullName, s.naziv FROM utakmica u JOIN klub kd ON (u.idDomacin = kd.idKlub) JOIN klub kg ON (u.idDomacin = kg.idKlub) JOIN sezona s ON (u.idSezona = s.idsezona) WHERE u.idDomacin = ? OR u.idGost = ? ORDER BY u.dateTime";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, club.getIdKlub());
+            ps.setInt(2, club.getIdKlub());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int idMatch = rs.getInt("u.idUtakmica");
+                String fullName = rs.getString("u.fullName");
+                Timestamp datets = rs.getTimestamp("u.dateTime");
+                LocalDateTime date = datets.toLocalDateTime();
+                String hostName = rs.getString("kd.fullName");
+                String guestName = rs.getString("kg.fullName");
+                String seasonName = rs.getString("s.naziv");
+                Match newMatch = new Match(idMatch, fullName, date, hostName, guestName, seasonName);
+                matches.add(newMatch);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return matches;
     }
 
 }

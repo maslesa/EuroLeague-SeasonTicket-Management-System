@@ -12,12 +12,12 @@ import models.Card;
  *
  * @author Ljubomir
  */
-public class AllSeasonTicketsTableModel extends AbstractTableModel {
+public class TableModelAllSeasonTickets extends AbstractTableModel {
 
     String[] columns = {"Card ID", "Season", "Card Type", "Price", "Vacances"};
     List<Card> cards = new ArrayList<>();
 
-    public AllSeasonTicketsTableModel(List<Card> cards) {
+    public TableModelAllSeasonTickets(List<Card> cards) {
         this.cards = cards;
     }
 

@@ -20,7 +20,7 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
 
     Club club = new Club(0, "", "", "", "", "");
     Controller k = Controller.getInstance();
-    AllSeasonTicketsTableModel model;
+    TableModelAllSeasonTickets model;
     Card selectedCard;
 
     /**
@@ -32,7 +32,7 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
         txtClubName.setText(club.getFullName());
         List<Card> cards = new ArrayList<>();
         cards = k.getAllCards(club);
-        model = new AllSeasonTicketsTableModel(cards);
+        model = new TableModelAllSeasonTickets(cards);
         tableCards.setModel(model);
         tableCards.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setLocationRelativeTo(null);

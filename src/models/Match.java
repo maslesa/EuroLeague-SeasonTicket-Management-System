@@ -18,6 +18,23 @@ public class Match {
     int idHost;
     int idGuest;
     int idSeason;
+    
+    //pomocne
+    String hostName;
+    String guestName;
+    String seasonName;
+
+    public Match(int idMatch, String fullName, LocalDateTime dateTime, String hostName, String guestName, String seasonName) {
+        this.idMatch = idMatch;
+        this.fullName = fullName;
+        this.dateTime = dateTime;
+        this.hostName = hostName;
+        this.guestName = guestName;
+        this.seasonName = seasonName;
+    }
+    
+    
+    
 
     public Match(int idMatch, String fullName, LocalDateTime dateTime, int idHost, int idGuest, int idSeason) {
         this.idMatch = idMatch;
@@ -84,6 +101,30 @@ public class Match {
 
     public void setIdSeason(int idSeason) {
         this.idSeason = idSeason;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
+    }
+
+    public String getSeasonName() {
+        return seasonName;
+    }
+
+    public void setSeasonName(String seasonName) {
+        this.seasonName = seasonName;
     }
     
     

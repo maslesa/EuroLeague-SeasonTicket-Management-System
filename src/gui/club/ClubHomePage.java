@@ -118,6 +118,11 @@ public class ClubHomePage extends javax.swing.JFrame {
         jMenu4.setText("Matches");
 
         jMenuItem5.setText("All matches");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem5);
         jMenu4.add(jSeparator3);
 
@@ -182,6 +187,11 @@ public class ClubHomePage extends javax.swing.JFrame {
         ClubAllFans caf = new ClubAllFans(club);
         dispose();
     }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        ClubAllMatches cam = new ClubAllMatches(club);
+        dispose();
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;

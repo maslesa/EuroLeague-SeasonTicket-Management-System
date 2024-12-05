@@ -1,10 +1,10 @@
 TODO
 
 Navijacka strana:
+    - odabirom sezonske karte, da se otvore detalji karte
     - da se izgenerise QRCode 12 sati pre utakmice
 
 
 Klupska strana:
-    - pregled svih utakmica
 
     
