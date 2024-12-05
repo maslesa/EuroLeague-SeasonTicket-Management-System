@@ -5,8 +5,6 @@ Navijacka strana:
 
 
 Klupska strana:
-    - editovanje profila
     - pregled svih utakmica
-    - ubacivanje nove utakmice
 
     

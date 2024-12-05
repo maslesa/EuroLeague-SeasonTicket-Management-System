@@ -196,7 +196,11 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
         Card newCard = new Card(price, vacances, season.getIdSezona(), club.getIdKlub(), cardType.getIdCardType());
 
         if (cardAlreadyExists(cards, newCard)) {
-            JOptionPane.showConfirmDialog(rootPane, "You have already defined that card! Do you want update it?", "Card already exists", JOptionPane.ERROR_MESSAGE);
+            int choice = JOptionPane.showConfirmDialog(rootPane, "You have already defined that card! Do you want update it?", "Card already exists", JOptionPane.YES_NO_OPTION);
+            if(choice == JOptionPane.YES_NO_OPTION){
+                ClubUpdateCard cuc = new ClubUpdateCard(club, season, cardType, newCard);
+                dispose();
+            }
         } else {
 
             if (k.insertNewCard(newCard)) {
@@ -239,6 +243,7 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
             private boolean vacanceValidation(DocumentEvent e) {
                 try {
                     String vacanceInput = e.getDocument().getText(0, e.getDocument().getLength());
+                    if(!inputsOK()) return false;
                     for (char c : vacanceInput.toCharArray()) {
                         if (!Character.isDigit(c)) {
                             return false;
@@ -272,6 +277,7 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
             private boolean priceValidation(DocumentEvent e){
                 try {
                     String priceInput = e.getDocument().getText(0, e.getDocument().getLength());
+                    if(!inputsOK()) return false;
                     for (char c : priceInput.toCharArray()) {
                         if (!Character.isDigit(c)) {
                             return false;
@@ -300,6 +306,13 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
             
         });
         
+    }
+    
+    private boolean inputsOK(){
+        String vacances = txtVacances.getText();
+        String price = txtPrice.getText();
+        if(vacances.equals("") || price.equals("")) return false;
+        return true;
     }
 
 }

@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package gui.fan;
+
 import controller.Controller;
 import models.Fan;
 import java.sql.*;
@@ -24,18 +25,17 @@ import javax.swing.text.BadLocationException;
  * @author Ljubomir
  */
 public class FanProfilePage extends javax.swing.JFrame {
-    
+
     private static final String emailPattern = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$";
     private static final String phonePattern = "^\\+?[0-9]{7,15}$";
 
     private boolean changeMode = false;
-    
+
     Fan fan;
     List<String> allFansUsernames = new ArrayList<>();
-    
-    
+
     Controller k = Controller.getInstance();
-    
+
     /**
      * Creates new form FanProfilePage
      */
@@ -266,11 +266,16 @@ public class FanProfilePage extends javax.swing.JFrame {
         changeProfile.setVisible(true);
         changeMode = true;
     }//GEN-LAST:event_changeProfileBtnActionPerformed
-    
+
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
-        if(changeMode && madeChanges()){
-            AYSPopup popUpQuestion = new AYSPopup(this, true, fan);
-        }else{
+        if (changeMode && madeChanges()) {
+            //AYSPopup popUpQuestion = new AYSPopup(this, true, fan);
+            int choice = JOptionPane.showConfirmDialog(rootPane, "Do you want to discard changes?", "Discard changes", JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) {
+                FanHomePage fhp = new FanHomePage(fan);
+                dispose();
+            }
+        } else {
             FanHomePage fhp = new FanHomePage(fan);
             dispose();
         }
@@ -282,10 +287,10 @@ public class FanProfilePage extends javax.swing.JFrame {
         String newUsername = usernameTxtView.getText();
         String newEmail = emailTxtView.getText();
         String newPhone = phoneTxtView.getText();
-        
-        if(inputsOK()){
+
+        if (inputsOK()) {
             k.updateDatasInBase(newName, newSurname, newUsername, newEmail, newPhone, fan);
-        
+
             nameTxtView.setEditable(false);
             surnameTxtView.setEditable(false);
             usernameTxtView.setEditable(false);
@@ -295,20 +300,20 @@ public class FanProfilePage extends javax.swing.JFrame {
             cancelChangeProfile.setVisible(false);
             changeProfile.setVisible(false);
             changeMode = false;
-            
+
             fan.setName(newName);
             fan.setSurname(newSurname);
             fan.setUsername(newUsername);
             fan.setEmail(newEmail);
             fan.setPhone(newPhone);
-            
+
             JOptionPane.showMessageDialog(rootPane, "User updated", "Updated successfully", JOptionPane.INFORMATION_MESSAGE);
-            
-        }else{
+
+        } else {
             JOptionPane.showMessageDialog(rootPane, "Inputs error", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
-        
+
+
     }//GEN-LAST:event_changeProfileActionPerformed
 
     private void cancelChangeProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelChangeProfileActionPerformed
@@ -349,37 +354,36 @@ public class FanProfilePage extends javax.swing.JFrame {
     private javax.swing.JTextField usernameTxtView;
     // End of variables declaration//GEN-END:variables
 
-    private boolean userWithThatUsernameExists(String usernameInput){
+    private boolean userWithThatUsernameExists(String usernameInput) {
         System.out.println("proveravam...");
-        for(int i = 0; i < allFansUsernames.size(); i++){
-            if(!usernameInput.equals(fan.getUsername()) && usernameInput.equals(allFansUsernames.get(i))){
+        for (int i = 0; i < allFansUsernames.size(); i++) {
+            if (!usernameInput.equals(fan.getUsername()) && usernameInput.equals(allFansUsernames.get(i))) {
                 System.out.println("postoji");
                 return true;
             }
         }
         return false;
     }
-    
-    private void addListener(){
-        usernameTxtView.getDocument().addDocumentListener(new DocumentListener(){
+
+    private void addListener() {
+        usernameTxtView.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 usernameValidation(e);
             }
-            
-            private void usernameValidation(DocumentEvent e){
+
+            private void usernameValidation(DocumentEvent e) {
                 try {
                     String usernameInput = e.getDocument().getText(0, e.getDocument().getLength());
-                    if(userWithThatUsernameExists(usernameInput)){
+                    if (userWithThatUsernameExists(usernameInput)) {
                         //System.out.println("Treba da se ispise");
                         usernameChecker.setText("exists");
-                    }else if(usernameInput.length() < 5){
+                    } else if (usernameInput.length() < 5) {
                         usernameChecker.setText("min 5 chars");
-                    }else{
+                    } else {
                         usernameChecker.setText("");
                     }
-                    
-                    
+
                 } catch (BadLocationException ex) {
                     Logger.getLogger(SignupPage.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -393,24 +397,24 @@ public class FanProfilePage extends javax.swing.JFrame {
             @Override
             public void changedUpdate(DocumentEvent e) {
             }
-            
+
         });
-        
-        phoneTxtView.getDocument().addDocumentListener(new DocumentListener(){
+
+        phoneTxtView.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 phoneValidate(e);
             }
-            
-            private void phoneValidate(DocumentEvent e){
+
+            private void phoneValidate(DocumentEvent e) {
                 try {
                     String phoneInput = e.getDocument().getText(0, e.getDocument().getLength());
-                    if(!phoneInput.matches(phonePattern)){
+                    if (!phoneInput.matches(phonePattern)) {
                         phoneCheckerField.setText("invalid format");
-                    }else{
+                    } else {
                         phoneCheckerField.setText("");
                     }
-                    
+
                 } catch (BadLocationException ex) {
                     Logger.getLogger(SignupPage.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -424,29 +428,29 @@ public class FanProfilePage extends javax.swing.JFrame {
             @Override
             public void changedUpdate(DocumentEvent e) {
             }
-            
+
         });
-        
-        emailTxtView.getDocument().addDocumentListener(new DocumentListener(){
+
+        emailTxtView.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 //System.out.println("Insert update");
                 emailValidate(e);
             }
-            
-            private void emailValidate(DocumentEvent e){
+
+            private void emailValidate(DocumentEvent e) {
                 try {
                     String emailInput = e.getDocument().getText(0, e.getDocument().getLength());
-                    if(!emailInput.matches(emailPattern)){
+                    if (!emailInput.matches(emailPattern)) {
                         emailCheckerField.setText("invalid format");
-                    }else{
+                    } else {
                         emailCheckerField.setText("");
                     }
                 } catch (BadLocationException ex) {
                     Logger.getLogger(SignupPage.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 //System.out.println("Remove update");
@@ -457,26 +461,30 @@ public class FanProfilePage extends javax.swing.JFrame {
             public void changedUpdate(DocumentEvent e) {
                 //System.out.println("Change update");
             }
-            
+
         });
     }
-        
-    private boolean inputsOK(){
-        
+
+    private boolean inputsOK() {
+
         String email = emailTxtView.getText();
         String usernameInput = usernameTxtView.getText();
         String name = nameTxtView.getText();
         String surname = surnameTxtView.getText();
         String phone = phoneTxtView.getText();
-        
-        if(phone.matches(phonePattern) && email.matches(emailPattern) && !userWithThatUsernameExists(usernameInput) && !name.equals("") && !surname.equals("") && !usernameInput.equals("")) return true;
+
+        if (phone.matches(phonePattern) && email.matches(emailPattern) && !userWithThatUsernameExists(usernameInput) && !name.equals("") && !surname.equals("") && !usernameInput.equals("")) {
+            return true;
+        }
         return false;
     }
-    
-    private boolean madeChanges(){
-        if(nameTxtView.getText().equals(fan.getName()) && surnameTxtView.getText().equals(fan.getSurname()) &&
-                usernameTxtView.getText().equals(fan.getUsername()) && emailTxtView.getText().equals(fan.getEmail())
-                && phoneTxtView.getText().equals(fan.getPhone())) return false;
+
+    private boolean madeChanges() {
+        if (nameTxtView.getText().equals(fan.getName()) && surnameTxtView.getText().equals(fan.getSurname())
+                && usernameTxtView.getText().equals(fan.getUsername()) && emailTxtView.getText().equals(fan.getEmail())
+                && phoneTxtView.getText().equals(fan.getPhone())) {
+            return false;
+        }
         return true;
     }
 }

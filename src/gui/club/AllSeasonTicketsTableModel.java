@@ -56,7 +56,10 @@ public class AllSeasonTicketsTableModel extends AbstractTableModel {
     public String getColumnName(int column) {
         return columns[column];
     }
-    
+
+    Card getCard(int rowIndex) {
+        return cards.get(rowIndex);
+    }
     
 
 }

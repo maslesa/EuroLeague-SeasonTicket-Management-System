@@ -11,6 +11,7 @@ import java.util.List;
 import models.Card;
 import models.CardType;
 import models.Club;
+import models.Match;
 import models.Season;
 import models.SeasonCard;
 
@@ -116,6 +117,26 @@ public class Controller {
 
     public List<Fan> getAllFansForClub(Club club) {
         return dbbroker.getAllFansForClub(club);
+    }
+
+    public boolean updateClubDatas(String newUsernamem, String newEmailString, String newPhone, Club club) {
+        return dbbroker.updateClubDatas(newUsernamem, newEmailString, newPhone, club);
+    }
+
+    public Club getClubWithNewDatas(Club club) {
+        return dbbroker.getClubWithNewDatas(club);
+    }
+
+    public boolean updateCard(Club club, Card card) {
+        return dbbroker.updateCard(club, card);
+    }
+
+    public boolean updateCard(Card card, double price, int vacances) {
+        return dbbroker.updateCard(card, price, vacances);
+    }
+
+    public boolean insertNewMatch(Match newMatch) {
+        return dbbroker.insertNewMatch(newMatch);
     }
 
 }

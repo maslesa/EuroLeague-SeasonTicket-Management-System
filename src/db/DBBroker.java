@@ -10,7 +10,6 @@ import java.awt.HeadlessException;
 import java.sql.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,6 +18,7 @@ import javax.swing.JOptionPane;
 import models.Card;
 import models.CardType;
 import models.Club;
+import models.Match;
 import models.Season;
 import models.SeasonCard;
 
@@ -538,6 +538,102 @@ public class DBBroker {
         }
         return fans;
         
+    }
+
+    public boolean updateClubDatas(String newUsernamem, String newEmailString, String newPhone, Club club) {
+        try {
+            String query = "UPDATE klub SET username = ?, email = ?, phone = ? WHERE idKlub = ?";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setString(1, newUsernamem);
+            ps.setString(2, newEmailString);
+            ps.setString(3, newPhone);
+            ps.setInt(4, club.getIdKlub());
+            int ra = ps.executeUpdate();
+            if(ra > 0) return true;
+            return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public Club getClubWithNewDatas(Club club) {
+        try {
+            String query = "SELECT * FROM klub WHERE idKlub = ?";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, club.getIdKlub());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int id = rs.getInt("idKlub");
+                String username = rs.getString("username");
+                String fullName = rs.getString("fullName");
+                String password = rs.getString("password");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                
+                Club newClub = new Club(id, username, password, fullName, email, phone);
+                
+                return newClub;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+
+    public boolean updateCard(Club club, Card card) {
+        try {
+            String query = "UPDATE karta SET cena = ?, slobodnaMesta = ? WHERE idKlub = ? AND idSezona = ? AND idTipKarta = ?";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setDouble(1, card.getPrice());
+            ps.setInt(2, card.getVacances());
+            ps.setInt(3, club.getIdKlub());
+            ps.setInt(4, card.getIdSeason());
+            ps.setInt(5, card.getIdCardType());
+            
+            int ra = ps.executeUpdate();
+            if(ra > 0) return true;
+            return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public boolean updateCard(Card card, double price, int vacances) {
+        try {
+            String query = "UPDATE karta SET cena = ?, slobodnaMesta = ? WHERE idkarta = ?";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setDouble(1, price);
+            ps.setInt(2, vacances);
+            ps.setInt(3, card.getIdCard());
+            int ra = ps.executeUpdate();
+            if(ra > 0) return true;
+            return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public boolean insertNewMatch(Match newMatch) {
+        try {
+            String query = "INSERT INTO utakmica (fullName, dateTime, idDomacin, idGost, idSezona) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setString(1, newMatch.getFullName());
+            Timestamp dateForInput = Timestamp.valueOf(newMatch.getDateTime());
+            ps.setTimestamp(2, dateForInput);
+            ps.setInt(3, newMatch.getIdHost());
+            ps.setInt(4, newMatch.getIdGuest());
+            ps.setInt(5, newMatch.getIdSeason());
+            int ra = ps.executeUpdate();
+            if(ra > 0) return true;
+            return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
 }

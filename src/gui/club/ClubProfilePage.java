@@ -4,6 +4,10 @@
  */
 package gui.club;
 
+import controller.Controller;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
 import models.Club;
 
 /**
@@ -11,19 +15,25 @@ import models.Club;
  * @author Ljubomir
  */
 public class ClubProfilePage extends javax.swing.JFrame {
-    
+
     Club club = new Club(0, "", "", "", "", "");
     boolean changeMode = false;
+    Controller k = Controller.getInstance();
+    private static final String emailPattern = "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$";
+    private static final String phonePattern = "^\\+?[0-9]{7,15}$";
+    List<Club> allClubsUsernames = new ArrayList<>();
 
     /**
      * Creates new form ClubProfilePage
      */
     public ClubProfilePage(Club club) {
         initComponents();
-        setVisible(true);
-        setLocationRelativeTo(null);
         this.club = club;
         fillFields();
+        allClubsUsernames = k.getAllClubs();
+        setVisible(true);
+        setLocationRelativeTo(null);
+
     }
 
     /**
@@ -53,7 +63,7 @@ public class ClubProfilePage extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sport tickets shop | My profile");
-        setPreferredSize(new java.awt.Dimension(420, 450));
+        setPreferredSize(new java.awt.Dimension(450, 480));
         setResizable(false);
 
         jTextField1.setEditable(false);
@@ -241,8 +251,19 @@ public class ClubProfilePage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
-        ClubHomePage chp = new ClubHomePage(club);
-        dispose();
+        String newUsernamem = txtUsername.getText();
+        String newEmailString = txtEmail.getText();
+        String newPhone = txtPhone.getText();
+        if (madeChanges(newUsernamem, newEmailString, newPhone)) {
+            int choice = JOptionPane.showConfirmDialog(rootPane, "Do you want to discard changes?", "Discard changes", JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) {
+                ClubHomePage chp = new ClubHomePage(club);
+                dispose();
+            }
+        } else {
+            ClubHomePage chp = new ClubHomePage(club);
+            dispose();
+        }
     }//GEN-LAST:event_btnGoBackActionPerformed
 
     private void txtEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmailActionPerformed
@@ -259,7 +280,6 @@ public class ClubProfilePage extends javax.swing.JFrame {
 
     private void changeProfileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeProfileBtnActionPerformed
         txtUsername.setEditable(true);
-        txtFullName.setEditable(true);
         txtEmail.setEditable(true);
         txtPhone.setEditable(true);
         changeProfileBtn.setVisible(false);
@@ -269,7 +289,6 @@ public class ClubProfilePage extends javax.swing.JFrame {
 
     private void cancelChangeProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelChangeProfileActionPerformed
         txtUsername.setEditable(false);
-        txtFullName.setEditable(false);
         txtEmail.setEditable(false);
         txtPhone.setEditable(false);
         changeProfileBtn.setVisible(true);
@@ -278,8 +297,30 @@ public class ClubProfilePage extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelChangeProfileActionPerformed
 
     private void changeProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeProfileActionPerformed
-        //todo: enable changes
-
+        String newUsernamem = txtUsername.getText();
+        String newEmailString = txtEmail.getText();
+        String newPhone = txtPhone.getText();
+        if (madeChanges(newUsernamem, newEmailString, newPhone)) {
+            if (inputsOK(newUsernamem, newEmailString, newPhone) && k.updateClubDatas(newUsernamem, newEmailString, newPhone, club)) {
+                JOptionPane.showMessageDialog(rootPane, "Datas updated successfully", "Successfull", JOptionPane.INFORMATION_MESSAGE);
+                this.club = k.getClubWithNewDatas(club);
+                txtUsername.setEditable(false);
+                txtEmail.setEditable(false);
+                txtPhone.setEditable(false);
+                changeProfileBtn.setVisible(true);
+                cancelChangeProfile.setVisible(false);
+                changeProfile.setVisible(false);
+            } else {
+                JOptionPane.showMessageDialog(rootPane, "Incorrect datas", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            txtUsername.setEditable(false);
+            txtEmail.setEditable(false);
+            txtPhone.setEditable(false);
+            changeProfileBtn.setVisible(true);
+            cancelChangeProfile.setVisible(false);
+            changeProfile.setVisible(false);
+        }
     }//GEN-LAST:event_changeProfileActionPerformed
 
 
@@ -301,8 +342,7 @@ public class ClubProfilePage extends javax.swing.JFrame {
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 
-
-    private void fillFields(){
+    private void fillFields() {
         txtId.setText(String.valueOf(club.getIdKlub()));
         txtUsername.setText(club.getUsername());
         txtFullName.setText(club.getFullName());
@@ -310,6 +350,29 @@ public class ClubProfilePage extends javax.swing.JFrame {
         txtEmail.setText(club.getEmail());
         cancelChangeProfile.setVisible(false);
         changeProfile.setVisible(false);
+    }
+
+    private boolean madeChanges(String newUsername, String newEmail, String newPhone) {
+        if (club.getUsername().equals(newUsername) && club.getEmail().equals(newEmail) && club.getPhone().equals(newPhone)) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean inputsOK(String newUsernamem, String newEmailString, String newPhone) {
+        if (!newEmailString.matches(emailPattern) || !newPhone.matches(phonePattern) || clubWithThatUsernameExists(newUsernamem) || newUsernamem.length() < 4) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean clubWithThatUsernameExists(String newUsernamem) {
+        for (int i = 0; i < allClubsUsernames.size(); i++) {
+            if (newUsernamem.equals(allClubsUsernames.get(i).getUsername()) && club.getIdKlub() != allClubsUsernames.get(i).getIdKlub()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -7,6 +7,9 @@ package gui.club;
 import controller.Controller;
 import models.Club;
 import java.util.*;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import models.Card;
 
 /**
@@ -17,7 +20,9 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
 
     Club club = new Club(0, "", "", "", "", "");
     Controller k = Controller.getInstance();
-    
+    AllSeasonTicketsTableModel model;
+    Card selectedCard;
+
     /**
      * Creates new form ClubAllSeasonTickets
      */
@@ -27,9 +32,12 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
         txtClubName.setText(club.getFullName());
         List<Card> cards = new ArrayList<>();
         cards = k.getAllCards(club);
-        AllSeasonTicketsTableModel model = new AllSeasonTicketsTableModel(cards);
+        model = new AllSeasonTicketsTableModel(cards);
         tableCards.setModel(model);
+        tableCards.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setLocationRelativeTo(null);
+        jbtnUpdate.setVisible(false);
+        addListener();
         setVisible(true);
     }
 
@@ -47,6 +55,7 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
         txtClubName = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableCards = new javax.swing.JTable();
+        jbtnUpdate = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sport tickets shop | All season tickets");
@@ -94,6 +103,13 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tableCards);
 
+        jbtnUpdate.setText("Update season ticket");
+        jbtnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnUpdateActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -109,7 +125,10 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
                         .addGap(55, 55, 55)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtClubName, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(welcomeMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(welcomeMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(189, 189, 189)
+                        .addComponent(jbtnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(77, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -123,7 +142,9 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
                 .addComponent(txtClubName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(34, 34, 34)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jbtnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         pack();
@@ -142,12 +163,33 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtClubNameActionPerformed
 
+    private void jbtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnUpdateActionPerformed
+        ClubUpdateCard cuc = new ClubUpdateCard(selectedCard, club);
+        dispose();
+    }//GEN-LAST:event_jbtnUpdateActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGoBack;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton jbtnUpdate;
     private javax.swing.JTable tableCards;
     private javax.swing.JTextField txtClubName;
     private javax.swing.JTextField welcomeMessage;
     // End of variables declaration//GEN-END:variables
+
+    private void addListener() {
+        tableCards.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting() && tableCards.getSelectedRowCount() == 1) {
+                    jbtnUpdate.setVisible(true);
+                    int rowIndex = tableCards.getSelectedRow();
+                    selectedCard = model.getCard(rowIndex);
+                } else {
+                    jbtnUpdate.setVisible(false);
+                }
+            }
+        });
+    }
 }

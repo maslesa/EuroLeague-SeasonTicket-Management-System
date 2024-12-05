@@ -7,6 +7,7 @@ package gui.fan;
 import controller.Controller;
 import models.Fan;
 import java.util.*;
+import javax.swing.ListSelectionModel;
 import models.SeasonCard;
 
 /**
@@ -102,7 +103,7 @@ public class FanAllTickets extends javax.swing.JFrame {
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(56, 56, 56)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
 
         pack();
