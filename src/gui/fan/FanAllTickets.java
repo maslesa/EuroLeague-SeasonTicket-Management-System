@@ -8,6 +8,8 @@ import controller.Controller;
 import models.Fan;
 import java.util.*;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import models.SeasonCard;
 
 /**
@@ -18,7 +20,8 @@ public class FanAllTickets extends javax.swing.JFrame {
 
     Fan fan;
     Controller k = Controller.getInstance();
-
+    TableModelSeasonCards tmsc;
+    SeasonCard selectedCard;
     /**
      * Creates new form FanAllTickets
      */
@@ -27,9 +30,12 @@ public class FanAllTickets extends javax.swing.JFrame {
         this.fan = fan;
         List<SeasonCard> seasonCards = new ArrayList<>();
         seasonCards = k.getAllSeasonCards(fan);
-        TableModelSeasonCards tmsc = new TableModelSeasonCards(seasonCards);
+        tmsc = new TableModelSeasonCards(seasonCards);
         jTableSeasonCards.setModel(tmsc);
+        jTableSeasonCards.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setLocationRelativeTo(null);
+        addListener();
+        jbtnViewDetails.setVisible(false);
         setVisible(true);
     }
 
@@ -46,6 +52,7 @@ public class FanAllTickets extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableSeasonCards = new javax.swing.JTable();
+        jbtnViewDetails = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sport tickets shop | All season tickets");
@@ -78,6 +85,13 @@ public class FanAllTickets extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTableSeasonCards);
 
+        jbtnViewDetails.setText("View details");
+        jbtnViewDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnViewDetailsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -91,7 +105,10 @@ public class FanAllTickets extends javax.swing.JFrame {
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(91, 91, 91)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 492, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 492, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(231, 231, 231)
+                        .addComponent(jbtnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(96, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -103,7 +120,9 @@ public class FanAllTickets extends javax.swing.JFrame {
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(56, 56, 56)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addGap(26, 26, 26)
+                .addComponent(jbtnViewDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         pack();
@@ -115,11 +134,33 @@ public class FanAllTickets extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnGoBackActionPerformed
 
+    private void jbtnViewDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnViewDetailsActionPerformed
+        FanSeasonCardDetails fscd = new FanSeasonCardDetails(fan, selectedCard);
+        dispose();
+    }//GEN-LAST:event_jbtnViewDetailsActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGoBack;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableSeasonCards;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton jbtnViewDetails;
     // End of variables declaration//GEN-END:variables
+
+    private void addListener() {
+        jTableSeasonCards.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting() && jTableSeasonCards.getSelectedRowCount() == 1) {
+                    jbtnViewDetails.setVisible(true);
+                    int rowIndex = jTableSeasonCards.getSelectedRow();
+                    selectedCard = tmsc.getSeasonCard(rowIndex);
+                } else {
+                    jbtnViewDetails.setVisible(false);
+                }
+            }
+        
+        });
+    }
 }

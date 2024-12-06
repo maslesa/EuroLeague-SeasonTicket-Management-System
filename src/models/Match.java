@@ -18,6 +18,7 @@ public class Match {
     int idHost;
     int idGuest;
     int idSeason;
+    int numberOfFans = 0;
     
     //pomocne
     String hostName;
@@ -32,7 +33,16 @@ public class Match {
         this.guestName = guestName;
         this.seasonName = seasonName;
     }
-    
+
+    public Match(int idMatch, String fullName, LocalDateTime dateTime, int idHost, int idGuest, int idSeason, int numberOfFans) {
+        this.idMatch = idMatch;
+        this.fullName = fullName;
+        this.dateTime = dateTime;
+        this.idHost = idHost;
+        this.idGuest = idGuest;
+        this.idSeason = idSeason;
+        this.numberOfFans = numberOfFans;
+    }
     
     
 
@@ -125,6 +135,14 @@ public class Match {
 
     public void setSeasonName(String seasonName) {
         this.seasonName = seasonName;
+    }
+
+    public int getNumberOfFans() {
+        return numberOfFans;
+    }
+
+    public void setNumberOfFans(int numberOfFans) {
+        this.numberOfFans = numberOfFans;
     }
     
     

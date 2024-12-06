@@ -7,6 +7,7 @@ package gui.club;
 import controller.Controller;
 import models.Club;
 import java.util.*;
+import javax.swing.ListSelectionModel;
 import models.Match;
 
 /**
@@ -27,6 +28,7 @@ public class ClubAllMatches extends javax.swing.JFrame {
         List<Match> matches = new ArrayList<>();
         matches = k.getAllMatches(club);
         TableModelAllMatches tmam = new TableModelAllMatches(matches);
+        jTableAllMatches.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jTableAllMatches.setModel(tmam);
         setLocationRelativeTo(null);
         setVisible(true);

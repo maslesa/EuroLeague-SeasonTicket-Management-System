@@ -7,6 +7,7 @@ package controller;
 import models.Fan;
 import db.DBBroker;
 import gui.login.SignupPage;
+import java.time.LocalDateTime;
 import java.util.List;
 import models.Card;
 import models.CardType;
@@ -141,6 +142,18 @@ public class Controller {
 
     public List<Match> getAllMatches(Club club) {
         return dbbroker.getAllMatches(club);
+    }
+
+    public String getQRCodeString(SeasonCard selectedCard) {
+        return dbbroker.getQRCodeString(selectedCard);
+    }
+
+    public LocalDateTime getDateTimeOfLatestMatch(SeasonCard selectedCard) {
+        return dbbroker.getDateTimeOfLatestMatch(selectedCard);
+    }
+
+    public void setQRCode(String qrCodeString, SeasonCard selectedCard) {
+        dbbroker.setQRCode(qrCodeString, selectedCard);
     }
 
 }

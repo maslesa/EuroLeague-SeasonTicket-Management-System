@@ -7,6 +7,7 @@ package gui.fan;
 import javax.swing.table.AbstractTableModel;
 import models.SeasonCard;
 import java.util.*;
+import javax.swing.JTable;
 
 /**
  *
@@ -15,7 +16,7 @@ import java.util.*;
 public class TableModelSeasonCards extends AbstractTableModel {
     
     List<SeasonCard> seasonCards = new ArrayList<>();
-    String[] columns = {"Season Card ID", "Club", "Season", "Card Type", "QR Code"};
+    String[] columns = {"Season Card ID", "Club", "Season", "Card Type"};
     
     public TableModelSeasonCards(List<SeasonCard> seasonCards) {
         this.seasonCards = seasonCards;
@@ -44,8 +45,6 @@ public class TableModelSeasonCards extends AbstractTableModel {
                 return sc.getSeasonName();
             case 3:
                 return sc.getCardTypeName();
-            case 4:
-                return sc.getQrCode();
             default:
                 return "N/A";
         }
@@ -54,6 +53,10 @@ public class TableModelSeasonCards extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
         return columns[column];
+    }
+
+    public SeasonCard getSeasonCard(int rowIndex) {
+        return seasonCards.get(rowIndex);
     }
     
     

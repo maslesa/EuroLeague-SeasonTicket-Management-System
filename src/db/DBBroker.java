@@ -648,7 +648,7 @@ public class DBBroker {
     public List<Match> getAllMatches(Club club) {
         List<Match> matches = new ArrayList<>();
         try {
-            String query = "SELECT u.idUtakmica, u.fullName, u.dateTime, kd.fullName, kg.fullName, s.naziv FROM utakmica u JOIN klub kd ON (u.idDomacin = kd.idKlub) JOIN klub kg ON (u.idDomacin = kg.idKlub) JOIN sezona s ON (u.idSezona = s.idsezona) WHERE u.idDomacin = ? OR u.idGost = ? ORDER BY u.dateTime";
+            String query = "SELECT u.idUtakmica, u.fullName, u.dateTime, kd.fullName, kg.fullName, s.naziv FROM utakmica u JOIN klub kd ON (u.idDomacin = kd.idKlub) JOIN klub kg ON (u.idGost = kg.idKlub) JOIN sezona s ON (u.idSezona = s.idsezona) WHERE u.idDomacin = ? OR u.idGost = ? ORDER BY u.dateTime";
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
             ps.setInt(1, club.getIdKlub());
             ps.setInt(2, club.getIdKlub());
@@ -669,6 +669,66 @@ public class DBBroker {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
         return matches;
+    }
+
+    public String getQRCodeString(SeasonCard selectedCard) {
+        
+        try {
+            String query = "SELECT u.idDomacin, u.idSezona, u.idUtakmica FROM utakmica u WHERE u.idSezona IN (SELECT k.idSezona FROM karta k JOIN sezonskaKarta sk ON (k.idkarta = sk.idKarta) WHERE sk.idSezonskaKarta = ?) AND u.idDomacin IN (SELECT k.idKlub FROM karta k JOIN sezonskakarta sk ON (k.idkarta = sk.idKarta) WHERE sk.idSezonskaKarta = ?) AND u.dateTime in (SELECT MIN(dateTime) FROM utakmica u WHERE u.idDomacin IN (SELECT k.idklub FROM karta k JOIN sezonskakarta sk ON (k.idkarta = sk.idKarta) WHERE sk.idSezonskaKarta = ?) AND u.dateTime > NOW())";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, selectedCard.getIdSeasonCard());
+            ps.setInt(2, selectedCard.getIdSeasonCard());
+            ps.setInt(3, selectedCard.getIdSeasonCard());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                String idDomacin = String.valueOf(rs.getInt("idDomacin"));
+                String idSezona = String.valueOf(rs.getInt("idSezona"));
+                String idUtakmica = String.valueOf(rs.getInt("idUtakmica"));
+                
+                String qrcode = idDomacin+";"+idSezona+";"+idUtakmica;
+                return qrcode;
+                
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "";
+    }
+
+    public LocalDateTime getDateTimeOfLatestMatch(SeasonCard selectedCard) {
+        
+        try {
+            String query = "SELECT u.dateTime FROM utakmica u WHERE u.idSezona IN (SELECT k.idSezona FROM karta k JOIN sezonskaKarta sk ON (k.idkarta = sk.idKarta) WHERE sk.idSezonskaKarta = ?) AND u.idDomacin IN (SELECT k.idKlub FROM karta k JOIN sezonskakarta sk ON (k.idkarta = sk.idKarta) WHERE sk.idSezonskaKarta = ?) AND u.dateTime in (SELECT MIN(dateTime) FROM utakmica u WHERE u.idDomacin IN (SELECT k.idklub FROM karta k JOIN sezonskakarta sk ON (k.idkarta = sk.idKarta) WHERE sk.idSezonskaKarta = ?) AND u.dateTime > NOW())";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, selectedCard.getIdSeasonCard());
+            ps.setInt(2, selectedCard.getIdSeasonCard());
+            ps.setInt(3, selectedCard.getIdSeasonCard());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Timestamp datets = rs.getTimestamp("u.dateTime");
+                LocalDateTime date = datets.toLocalDateTime();
+                return date;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public void setQRCode(String qrCodeString, SeasonCard selectedCard) {
+        try {
+            String query = "UPDATE sezonskakarta sk JOIN karta k ON sk.idKarta = k.idKarta SET sk.qrCode = ?, sk.idUtakmica = ? WHERE (k.idKlub, k.idSezona) IN (SELECT t.idKlub, t.idSezona FROM (SELECT k.idKlub, k.idSezona FROM karta k JOIN sezonskakarta sk ON k.idKarta = sk.idKarta WHERE sk.idSezonskaKarta = ?) AS t)";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setString(1, qrCodeString);
+            String[] codes = qrCodeString.split(";");
+            ps.setInt(2, Integer.valueOf(codes[2]));
+            ps.setInt(3, selectedCard.getIdSeasonCard());
+            int ra = ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

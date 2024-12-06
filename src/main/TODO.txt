@@ -1,10 +1,14 @@
 TODO
 
 Navijacka strana:
-    - odabirom sezonske karte, da se otvore detalji karte
-    - da se izgenerise QRCode 12 sati pre utakmice
+    - 
 
 
 Klupska strana:
+    - odabir utakmice
+    - provera koliko je navijaca doslo
 
     
+Skener:
+    - skenira qrcode
+    - update-uje arrival time na sezonskoj i povecava u utakmici brojgledalaca za 1
