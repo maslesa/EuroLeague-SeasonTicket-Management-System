@@ -1,9 +1,0 @@
-TODO
-
-
-Klupska strana:
-
-    
-Skener:
-    - skenira qrcode
-    - update-uje arrival time na sezonskoj i povecava u utakmici brojgledalaca za 1

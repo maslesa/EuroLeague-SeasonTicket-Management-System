@@ -19,7 +19,7 @@ import models.Match;
 public class TableModelAllMatches extends AbstractTableModel {
 
     List<Match> matches = new ArrayList<>();
-    String[] columns = {"Match", "Date and time", "Host", "Guest", "Season", "Game over"};
+    String[] columns = {"Match", "Date and time", "Host", "Guest", "Season", "Finished"};
     
     public TableModelAllMatches(List<Match> matches ) {
         this.matches = matches;
@@ -43,7 +43,8 @@ public class TableModelAllMatches extends AbstractTableModel {
             case 0:
                 return match.getFullName();
             case 1:
-                return match.getDateTime().toString();
+                String[] fullDate = match.getDateTime().toString().split("T");
+                return fullDate[0] + "   " + fullDate[1];
             case 2:
                 return match.getHostName();
             case 3:

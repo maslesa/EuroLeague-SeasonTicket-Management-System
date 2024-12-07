@@ -156,4 +156,8 @@ public class Controller {
         dbbroker.setQRCode(qrCodeString, selectedCard);
     }
 
+    public Fan getNewFan() {
+        return dbbroker.getNewFan();
+    }
+
 }

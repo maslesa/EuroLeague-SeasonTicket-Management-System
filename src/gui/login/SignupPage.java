@@ -412,6 +412,7 @@ public class SignupPage extends javax.swing.JFrame {
         } else {
             fan = new Fan(name, surname, username, email, birthday, phone, password);
             if(k.addNewNavijac(fan)){
+                fan = k.getNewFan();
                 this.dispose();
                 FanHomePage fhp = new FanHomePage(fan);
             }else{

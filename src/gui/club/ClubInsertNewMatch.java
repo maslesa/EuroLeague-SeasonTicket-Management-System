@@ -44,12 +44,6 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
                 jcbGuest.addItem(c);
             }
         }
-        for (int i = 8; i <= 22; i++) {
-            jcbHours.addItem(i);
-        }
-        for (int i = 0; i < minutes.length; i++) {
-            jcbMinutes.addItem(minutes[i]);
-        }
         txtHost.setText(club.getFullName());
         addListener();
         setLocationRelativeTo(null);
@@ -294,11 +288,15 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
             Season season = (Season) jcbSeason.getSelectedItem();
             Club guest = (Club) jcbGuest.getSelectedItem();
             LocalDateTime date = makeDate();
-            Match newMatch = new Match(club.getFullName() + " - " + guest.getFullName(), date, club.getIdKlub(), guest.getIdKlub(), season.getIdSezona());
-            if (k.insertNewMatch(newMatch)) {
-                JOptionPane.showMessageDialog(rootPane, "New match inserted successfully", "Successfull", JOptionPane.INFORMATION_MESSAGE);
+            if (date.isBefore(LocalDateTime.now())) {
+                JOptionPane.showMessageDialog(rootPane, "Date can not be date before today", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(rootPane, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+                Match newMatch = new Match(club.getFullName() + " - " + guest.getFullName(), date, club.getIdKlub(), guest.getIdKlub(), season.getIdSezona());
+                if (k.insertNewMatch(newMatch)) {
+                    JOptionPane.showMessageDialog(rootPane, "New match inserted successfully", "Successfull", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(rootPane, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, "Inputs error", "Error", JOptionPane.ERROR_MESSAGE);
@@ -336,7 +334,7 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
                 Season selectedSeason = (Season) jcbSeason.getSelectedItem();
                 String seasonName = selectedSeason.getName().substring(0, 4);
-                System.out.println(seasonName);
+                //System.out.println(seasonName);
                 int season = Integer.parseInt(seasonName);
                 jcbYear.removeAllItems();
                 jcbYear.addItem(season);
@@ -350,24 +348,75 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Integer selectedYear = (Integer) jcbYear.getSelectedItem();
-                System.out.println(selectedYear);
+                //System.out.println(selectedYear);
                 String selectedMonth = (String) jcbMonth.getSelectedItem();
-                System.out.println(selectedMonth);
+                //System.out.println(selectedMonth);
 
                 if (selectedYear != null && jcbYear.getSelectedIndex() == 0) {
                     jcbMonth.removeAllItems();
-                    jcbMonth.addItem("September");
-                    jcbMonth.addItem("October");
-                    jcbMonth.addItem("November");
-                    jcbMonth.addItem("December");
+                    if (selectedYear == LocalDateTime.now().getYear()) {
+                        int month = LocalDateTime.now().getMonthValue();
+                        if (month == 9) {
+                            jcbMonth.addItem("September");
+                            jcbMonth.addItem("October");
+                            jcbMonth.addItem("November");
+                            jcbMonth.addItem("December");
+                        } else if (month == 10) {
+                            jcbMonth.addItem("October");
+                            jcbMonth.addItem("November");
+                            jcbMonth.addItem("December");
+                        } else if (month == 11) {
+                            jcbMonth.addItem("November");
+                            jcbMonth.addItem("December");
+                        } else if (month == 12) {
+                            jcbMonth.addItem("December");
+                        }
+                    } else {
+                        jcbMonth.addItem("September");
+                        jcbMonth.addItem("October");
+                        jcbMonth.addItem("November");
+                        jcbMonth.addItem("December");
+                    }
                 } else if (selectedYear != null) {
                     jcbMonth.removeAllItems();
-                    jcbMonth.addItem("January");
-                    jcbMonth.addItem("February");
-                    jcbMonth.addItem("March");
-                    jcbMonth.addItem("April");
-                    jcbMonth.addItem("May");
-                    jcbMonth.addItem("June");
+                    if (selectedYear == LocalDateTime.now().getYear()) {
+                        int month = LocalDateTime.now().getMonthValue();
+                        if (month == 1) {
+                            jcbMonth.addItem("January");
+                            jcbMonth.addItem("February");
+                            jcbMonth.addItem("March");
+                            jcbMonth.addItem("April");
+                            jcbMonth.addItem("May");
+                            jcbMonth.addItem("June");
+                        } else if (month == 2) {
+                            jcbMonth.addItem("February");
+                            jcbMonth.addItem("March");
+                            jcbMonth.addItem("April");
+                            jcbMonth.addItem("May");
+                            jcbMonth.addItem("June");
+                        } else if (month == 3) {
+                            jcbMonth.addItem("March");
+                            jcbMonth.addItem("April");
+                            jcbMonth.addItem("May");
+                            jcbMonth.addItem("June");
+                        } else if (month == 4) {
+                            jcbMonth.addItem("April");
+                            jcbMonth.addItem("May");
+                            jcbMonth.addItem("June");
+                        } else if (month == 5) {
+                            jcbMonth.addItem("May");
+                            jcbMonth.addItem("June");
+                        } else if (month == 6) {
+                            jcbMonth.addItem("June");
+                        }
+                    } else {
+                        jcbMonth.addItem("January");
+                        jcbMonth.addItem("February");
+                        jcbMonth.addItem("March");
+                        jcbMonth.addItem("April");
+                        jcbMonth.addItem("May");
+                        jcbMonth.addItem("June");
+                    }
                 }
 
                 if (selectedMonth != null && selectedYear != null && selectedYear % 4 == 0 && selectedMonth.equals("February")) {
@@ -389,34 +438,138 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 String selectedMonth = (String) jcbMonth.getSelectedItem();
-                System.out.println(selectedMonth);
+                //System.out.println(selectedMonth);
                 Integer selectedYear = (Integer) jcbYear.getSelectedItem();
-                System.out.println(selectedYear);
+                //System.out.println(selectedYear);
                 if (selectedMonth != null && selectedYear != null && selectedYear % 4 == 0 && selectedMonth.equals("February")) {
                     jcbDay.removeAllItems();
-                    for (int i = 1; i <= 29; i++) {
-                        jcbDay.addItem(i);
+                    if (selectedYear == LocalDateTime.now().getYear() && selectedMonth.equals(getMonthName(LocalDateTime.now().getMonthValue()))) {
+                        int dayToday = LocalDateTime.now().getDayOfMonth();
+                        for (int i = dayToday; i <= 29; i++) {
+                            jcbDay.addItem(i);
+                        }
+                    } else {
+                        for (int i = 1; i <= 29; i++) {
+                            jcbDay.addItem(i);
+                        }
                     }
                 } else if (selectedMonth != null && selectedYear != null && selectedYear % 4 != 0 && selectedMonth.equals("February")) {
                     jcbDay.removeAllItems();
-                    for (int i = 1; i <= 28; i++) {
-                        jcbDay.addItem(i);
+                    if (selectedYear == LocalDateTime.now().getYear() && selectedMonth.equals(getMonthName(LocalDateTime.now().getMonthValue()))) {
+                        int dayToday = LocalDateTime.now().getDayOfMonth();
+                        for (int i = dayToday; i <= 28; i++) {
+                            jcbDay.addItem(i);
+                        }
+                    } else {
+                        for (int i = 1; i <= 28; i++) {
+                            jcbDay.addItem(i);
+                        }
                     }
                 } else if (selectedMonth != null && selectedYear != null && (selectedMonth.equals("April") || selectedMonth.equals("June") || selectedMonth.equals("September") || selectedMonth.equals("November"))) {
                     jcbDay.removeAllItems();
-                    for (int i = 1; i <= 30; i++) {
-                        jcbDay.addItem(i);
+                    if (selectedYear == LocalDateTime.now().getYear() && selectedMonth.equals(getMonthName(LocalDateTime.now().getMonthValue()))) {
+                        int dayToday = LocalDateTime.now().getDayOfMonth();
+                        for (int i = dayToday; i <= 30; i++) {
+                            jcbDay.addItem(i);
+                        }
+                    } else {
+                        for (int i = 1; i <= 30; i++) {
+                            jcbDay.addItem(i);
+                        }
                     }
                 } else {
                     jcbDay.removeAllItems();
-                    for (int i = 1; i <= 31; i++) {
-                        jcbDay.addItem(i);
+                    if (selectedMonth != null && selectedYear == LocalDateTime.now().getYear() && selectedMonth.equals(getMonthName(LocalDateTime.now().getMonthValue()))) {
+                        int dayToday = LocalDateTime.now().getDayOfMonth();
+                        for (int i = dayToday; i <= 31; i++) {
+                            jcbDay.addItem(i);
+                        }
+                    } else {
+                        for (int i = 1; i <= 31; i++) {
+                            jcbDay.addItem(i);
+                        }
                     }
                 }
             }
 
         });
 
+        jcbDay.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jcbHours.removeAllItems();
+                String selectedMonth = (String) jcbMonth.getSelectedItem();
+                //System.out.println(selectedMonth);
+                Integer selectedYear = (Integer) jcbYear.getSelectedItem();
+                //System.out.println(selectedYear);
+                Integer selectedDay = (Integer) jcbDay.getSelectedItem();
+                int hourToday = LocalDateTime.now().getHour();
+                if (selectedDay != null && selectedMonth != null && selectedYear != null && selectedYear == LocalDateTime.now().getYear()
+                        && selectedMonth.equals(getMonthName(LocalDateTime.now().getMonthValue())) && selectedDay == LocalDateTime.now().getDayOfMonth()) {
+                    if (LocalDateTime.now().getMinute() > 45) {
+                        for (int i = hourToday + 1; i <= 22; i++) {
+                            jcbHours.addItem(i);
+                        }
+                    } else {
+                        for (int i = hourToday; i <= 22; i++) {
+                            jcbHours.addItem(i);
+                        }
+                    }
+
+                } else {
+                    for (int i = 8; i <= 22; i++) {
+                        jcbHours.addItem(i);
+                    }
+                }
+            }
+
+        });
+
+        jcbHours.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jcbMinutes.removeAllItems();
+                String selectedMonth = (String) jcbMonth.getSelectedItem();
+                System.out.println(selectedMonth);
+                Integer selectedYear = (Integer) jcbYear.getSelectedItem();
+                System.out.println(selectedYear);
+                Integer selectedDay = (Integer) jcbDay.getSelectedItem();
+                Integer selectedHours = (Integer) jcbHours.getSelectedItem();
+
+                int todayMinutes = LocalDateTime.now().getMinute();
+
+                if (selectedHours != null && selectedDay != null && selectedMonth != null && selectedYear != null && selectedYear == LocalDateTime.now().getYear()
+                        && selectedMonth.equals(getMonthName(LocalDateTime.now().getMonthValue())) && selectedDay == LocalDateTime.now().getDayOfMonth()
+                        && selectedHours == LocalDateTime.now().getHour()) {
+                    if (todayMinutes > 45) {
+                        for (int i = LocalDateTime.now().getHour() + 1; i <= 22; i++) {
+                            jcbHours.addItem(i);
+                        }
+                        for (int i = 0; i < minutes.length; i++) {
+                            jcbMinutes.addItem(minutes[i]);
+                        }
+                    } else if (todayMinutes > 30) {
+                        for (int i = 3; i < minutes.length; i++) {
+                            jcbMinutes.addItem(minutes[i]);
+                        }
+                    } else if (todayMinutes > 15) {
+                        for (int i = 2; i < minutes.length; i++) {
+                            jcbMinutes.addItem(minutes[i]);
+                        }
+                    } else if (todayMinutes > 0) {
+                        for (int i = 1; i < minutes.length; i++) {
+                            jcbMinutes.addItem(minutes[i]);
+                        }
+                    }
+                } else {
+                    for (int i = 0; i < minutes.length; i++) {
+                        jcbMinutes.addItem(minutes[i]);
+                    }
+                }
+
+            }
+
+        });
     }
 
     private LocalDateTime makeDate() {
@@ -470,4 +623,34 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
         return date;
     }
 
+    private String getMonthName(int index) {
+        switch (index) {
+            case 1:
+                return "January";
+            case 2:
+                return "February";
+            case 3:
+                return "March";
+            case 4:
+                return "April";
+            case 5:
+                return "May";
+            case 6:
+                return "June";
+            case 7:
+                return "July";
+            case 8:
+                return "August";
+            case 9:
+                return "September";
+            case 10:
+                return "October";
+            case 11:
+                return "November";
+            case 12:
+                return "December";
+            default:
+                return "January";
+        }
+    }
 }

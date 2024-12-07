@@ -731,4 +731,30 @@ public class DBBroker {
         }
     }
 
+    public Fan getNewFan() {
+        Fan fan = null;
+        try {
+            String query = "SELECT * FROM navijac WHERE idNavijac IN (SELECT MAX(idNavijac) FROM navijac)";
+            Statement st = Konekcija.getInstance().getCon().createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while(rs.next()){
+                int idFan = rs.getInt("idNavijac");
+                String name = rs.getString("name");
+                String surname = rs.getString("surname");
+                String username = rs.getString("username");
+                String email = rs.getString("email");
+                Date birthdayDB = rs.getDate("birthday");
+                LocalDate birthday = birthdayDB.toLocalDate();
+                String phone = rs.getString("phone");
+                String password = rs.getString("password");
+                
+                fan = new Fan(idFan, name, surname, username, email, birthday, phone, password);
+                
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return fan;
+    }
+
 }

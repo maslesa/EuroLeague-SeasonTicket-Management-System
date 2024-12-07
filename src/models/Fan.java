@@ -25,6 +25,19 @@ public class Fan {
     String seasonName;
     String cardTypeName;
 
+    public Fan(int idNavijac, String name, String surname, String username, String email, LocalDate birthday, String phone, String password) {
+        this.idNavijac = idNavijac;
+        this.name = name;
+        this.surname = surname;
+        this.username = username;
+        this.email = email;
+        this.birthday = birthday;
+        this.phone = phone;
+        this.password = password;
+    }
+    
+    
+
     public Fan(int idNavijac, String name, String surname, String username, String email, String phone, String seasonName, String cardTypeName) {
         this.idNavijac = idNavijac;
         this.name = name;
