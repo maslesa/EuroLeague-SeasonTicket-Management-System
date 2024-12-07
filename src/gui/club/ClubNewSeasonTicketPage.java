@@ -194,7 +194,7 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
         int vacances = Integer.parseInt(txtVacances.getText());
         int price = Integer.parseInt(txtPrice.getText());
         Card newCard = new Card(price, vacances, season.getIdSezona(), club.getIdKlub(), cardType.getIdCardType());
-
+        cards = k.getAllCardsNew(club);
         if (cardAlreadyExists(cards, newCard)) {
             int choice = JOptionPane.showConfirmDialog(rootPane, "You have already defined that card! Do you want update it?", "Card already exists", JOptionPane.YES_NO_OPTION);
             if(choice == JOptionPane.YES_NO_OPTION){

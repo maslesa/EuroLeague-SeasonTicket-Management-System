@@ -1,12 +1,7 @@
 TODO
 
-Navijacka strana:
-    - 
-
 
 Klupska strana:
-    - odabir utakmice
-    - provera koliko je navijaca doslo
 
     
 Skener:

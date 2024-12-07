@@ -8,6 +8,9 @@ import controller.Controller;
 import models.Club;
 import java.util.*;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import jdk.jfr.FlightRecorder;
 import models.Match;
 
 /**
@@ -18,7 +21,9 @@ public class ClubAllMatches extends javax.swing.JFrame {
     
     Club club;
     List<Match> matches = new ArrayList<>();
+    Match selectedMatch;
     Controller k = Controller.getInstance();
+    TableModelAllMatches tmam;
     /**
      * Creates new form ClubAllMatches
      */
@@ -27,9 +32,11 @@ public class ClubAllMatches extends javax.swing.JFrame {
         this.club = club;
         List<Match> matches = new ArrayList<>();
         matches = k.getAllMatches(club);
-        TableModelAllMatches tmam = new TableModelAllMatches(matches);
+        tmam = new TableModelAllMatches(matches);
         jTableAllMatches.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jTableAllMatches.setModel(tmam);
+        jbtnMatchDetails.setVisible(false);
+        addListener();
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -47,6 +54,7 @@ public class ClubAllMatches extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableAllMatches = new javax.swing.JTable();
+        jbtnMatchDetails = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sport tickets shop | All matches");
@@ -84,20 +92,32 @@ public class ClubAllMatches extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTableAllMatches);
 
+        jbtnMatchDetails.setText("View match details");
+        jbtnMatchDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnMatchDetailsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(btnGoBack, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(228, 228, 228)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(btnGoBack, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(277, 277, 277)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(91, 91, 91)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 789, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(95, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(108, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 676, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(89, 89, 89))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jbtnMatchDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(374, 374, 374))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -106,9 +126,11 @@ public class ClubAllMatches extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGoBack, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(39, 39, 39)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addComponent(jbtnMatchDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         pack();
@@ -123,11 +145,32 @@ public class ClubAllMatches extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    private void jbtnMatchDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnMatchDetailsActionPerformed
+        ClubMatchDetails cmd = new ClubMatchDetails(club, selectedMatch);
+        dispose();
+    }//GEN-LAST:event_jbtnMatchDetailsActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGoBack;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableAllMatches;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton jbtnMatchDetails;
     // End of variables declaration//GEN-END:variables
+
+    private void addListener() {
+        jTableAllMatches.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting() && jTableAllMatches.getSelectedRowCount() == 1) {
+                    jbtnMatchDetails.setVisible(true);
+                    int rowIndex = jTableAllMatches.getSelectedRow();
+                    selectedMatch = tmam.getMatch(rowIndex);
+                } else {
+                    jbtnMatchDetails.setVisible(false);
+                }
+            }
+        });
+    }
 }

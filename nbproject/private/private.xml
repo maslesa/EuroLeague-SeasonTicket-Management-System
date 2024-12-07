@@ -5,7 +5,8 @@
         <group>
             <file>file:/D:/ProjektovanjeSoftvera/ProdajaSezonskihKarata/src/main/TODO.txt</file>
             <file>file:/D:/ProjektovanjeSoftvera/ProdajaSezonskihKarata/src/gui/club/ClubAllMatches.java</file>
-            <file>file:/D:/ProjektovanjeSoftvera/ProdajaSezonskihKarata/src/gui/club/ClubAllSeasonTickets.java</file>
+            <file>file:/D:/ProjektovanjeSoftvera/ProdajaSezonskihKarata/src/gui/club/ClubUpdateCard.java</file>
+            <file>file:/D:/ProjektovanjeSoftvera/ProdajaSezonskihKarata/src/gui/club/ClubMatchDetails.java</file>
         </group>
     </open-files>
 </project-private>

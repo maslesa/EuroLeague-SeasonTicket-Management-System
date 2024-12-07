@@ -4,6 +4,9 @@
  */
 package gui.club;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
@@ -16,7 +19,7 @@ import models.Match;
 public class TableModelAllMatches extends AbstractTableModel {
 
     List<Match> matches = new ArrayList<>();
-    String[] columns = {"Match", "Date and time", "Host", "Guest", "Season"};
+    String[] columns = {"Match", "Date and time", "Host", "Guest", "Season", "Game over"};
     
     public TableModelAllMatches(List<Match> matches ) {
         this.matches = matches;
@@ -47,6 +50,12 @@ public class TableModelAllMatches extends AbstractTableModel {
                 return match.getGuestName();
             case 4:
                 return match.getSeasonName();
+            case 5:
+                Duration duration = Duration.between(LocalDateTime.now(), match.getDateTime());
+                if(duration.toHours() <= 3 && duration.isNegative()){
+                    return true;
+                }
+                return false;
             default:
                 return "N/A";
         }
@@ -55,6 +64,18 @@ public class TableModelAllMatches extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
         return columns[column];
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        if(columnIndex == 5){
+            return Boolean.class;
+        }
+        return String.class;
+    }
+
+    Match getMatch(int rowIndex) {
+        return matches.get(rowIndex);
     }
     
     
