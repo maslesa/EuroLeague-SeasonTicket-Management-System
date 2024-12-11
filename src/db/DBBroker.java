@@ -397,7 +397,7 @@ public class DBBroker {
     public List<CardType> getPossibleCardTypes(Club club, Season season) {
         List<CardType> cardtypes = new ArrayList<>();
         try {
-            String query = "SELECT DISTINCT tk.idTipKarte, tk.naziv FROM tipkarte tk JOIN karta k ON (tk.idTipKarte = k.idTipKarta) JOIN sezona s ON (k.idSezona = s.idsezona) WHERE k.idKlub = ? AND k.idSezona = ?";
+            String query = "SELECT DISTINCT tk.idTipKarte, tk.naziv FROM tipkarte tk JOIN karta k ON (tk.idTipKarte = k.idTipKarta) JOIN sezona s ON (k.idSezona = s.idsezona) WHERE k.idKlub = ? AND k.idSezona = ? AND k.slobodnaMesta != 0";
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
             ps.setInt(1, club.getIdKlub());
             ps.setInt(2, season.getIdSezona());
