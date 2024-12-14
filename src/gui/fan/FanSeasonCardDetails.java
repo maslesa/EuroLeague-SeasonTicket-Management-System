@@ -15,9 +15,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import models.Fan;
 import models.SeasonCard;
 

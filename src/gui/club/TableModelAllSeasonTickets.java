@@ -60,6 +60,16 @@ public class TableModelAllSeasonTickets extends AbstractTableModel {
     Card getCard(int rowIndex) {
         return cards.get(rowIndex);
     }
+
+    void refreshDatas() {
+        fireTableDataChanged();
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
+    }
+    
+    
     
 
 }

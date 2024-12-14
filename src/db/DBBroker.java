@@ -324,10 +324,10 @@ public class DBBroker {
         return false;
     }
 
-    public List<Card> getAllCards(Club club) {
+    public List<Card> getAllCards(Club club, String sorter) {
         List<Card> cards = new ArrayList<>();
         try {
-            String query = "SELECT k.idkarta, s.naziv, tk.naziv, k.cena, k.slobodnaMesta FROM karta k JOIN klub kl on (k.idKlub = kl.idKlub) JOIN sezona s on (k.idSezona = s.idsezona) join tipkarte tk on (k.idTipKarta = tk.idTipKarte) where k.idKlub = ? ORDER BY s.naziv";
+            String query = "SELECT k.idkarta, s.naziv, tk.naziv, k.cena, k.slobodnaMesta FROM karta k JOIN klub kl on (k.idKlub = kl.idKlub) JOIN sezona s on (k.idSezona = s.idsezona) join tipkarte tk on (k.idTipKarta = tk.idTipKarte) where k.idKlub = ? ORDER BY " + sorter + " ASC";
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
             ps.setInt(1, club.getIdKlub());
             ResultSet rs = ps.executeQuery();
@@ -756,5 +756,50 @@ public class DBBroker {
         }
         return fan;
     }
+
+    public String getArenaName(int idHost) {
+
+        try {
+            String query = "SELECT naziv FROM hala WHERE idKlub = ?";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, idHost);
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()){
+                String naziv = rs.getString("naziv");
+                return naziv;
+            }
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return "N/A";
+        
+    }
+
+    public int getIdHost(Match match) {
+        
+        try {
+            String query = "SELECT idDomacin FROM utakmica WHERE idUtakmica = ?";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, match.getIdMatch());
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()){
+                int id = rs.getInt("idDomacin");
+                return id;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return 0;
+        
+        
+    }
+
+   
 
 }

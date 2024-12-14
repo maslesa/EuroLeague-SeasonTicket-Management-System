@@ -84,8 +84,8 @@ public class Controller {
         return dbbroker.insertNewCard(newCard);
     }
 
-    public List<Card> getAllCards(Club club) {
-        return dbbroker.getAllCards(club);
+    public List<Card> getAllCards(Club club, String sorter) {
+        return dbbroker.getAllCards(club, sorter);
     }
 
     public List<Card> getAllCardsNew(Club club) {
@@ -159,5 +159,14 @@ public class Controller {
     public Fan getNewFan() {
         return dbbroker.getNewFan();
     }
+
+    public String getArenaName(int idHost) {
+        return dbbroker.getArenaName(idHost);
+    }
+
+    public int getIdHost(Match match) {
+        return dbbroker.getIdHost(match);
+    }
+
 
 }

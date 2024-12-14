@@ -5,6 +5,8 @@
 package gui.club;
 
 import controller.Controller;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import models.Club;
 import java.util.*;
 import javax.swing.ListSelectionModel;
@@ -22,6 +24,7 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
     Controller k = Controller.getInstance();
     TableModelAllSeasonTickets model;
     Card selectedCard;
+    List<Card> cards;
 
     /**
      * Creates new form ClubAllSeasonTickets
@@ -30,8 +33,8 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
         initComponents();
         this.club = club;
         txtClubName.setText(club.getFullName());
-        List<Card> cards = new ArrayList<>();
-        cards = k.getAllCards(club);
+        cards = new ArrayList<>();
+        cards = k.getAllCards(club, "s.naziv");
         model = new TableModelAllSeasonTickets(cards);
         tableCards.setModel(model);
         tableCards.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -56,6 +59,8 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableCards = new javax.swing.JTable();
         jbtnUpdate = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jcbSorting = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sport tickets shop | All season tickets");
@@ -110,15 +115,28 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setText("Sort by:");
+
+        jcbSorting.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Season", "Card type", "Card ID", "Price", "Vacances" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 86, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 473, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(95, 95, 95)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jcbSorting, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(73, 73, 73))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(71, 71, 71)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 473, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(33, 33, 33)
                         .addComponent(btnGoBack, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -127,9 +145,9 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
                             .addComponent(txtClubName, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(welcomeMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(189, 189, 189)
+                        .addGap(208, 208, 208)
                         .addComponent(jbtnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(77, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -140,11 +158,15 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
                     .addComponent(welcomeMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtClubName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jcbSorting, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
                 .addComponent(jbtnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         pack();
@@ -171,8 +193,10 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGoBack;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton jbtnUpdate;
+    private javax.swing.JComboBox<String> jcbSorting;
     private javax.swing.JTable tableCards;
     private javax.swing.JTextField txtClubName;
     private javax.swing.JTextField welcomeMessage;
@@ -191,5 +215,36 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
                 }
             }
         });
+
+        jcbSorting.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedSort = (String) jcbSorting.getSelectedItem();
+                System.out.println(selectedSort);
+                if (selectedSort.equals("Season")) {
+                    cards = k.getAllCards(club, "s.naziv");
+                    refreshTable();
+                } else if (selectedSort.equals("Card type")) {
+                    cards = k.getAllCards(club, "tk.naziv");
+                    refreshTable();
+                } else if (selectedSort.equals("Card ID")) {
+                    cards = k.getAllCards(club, "k.idkarta");
+                    refreshTable();
+                } else if (selectedSort.equals("Price")) {
+                    cards = k.getAllCards(club, "k.cena");
+                    refreshTable();
+                } else if (selectedSort.equals("Vacances")) {
+                    cards = k.getAllCards(club, "k.slobodnaMesta");
+                    refreshTable();
+                }  
+            }
+
+            private void refreshTable() {
+                TableModelAllSeasonTickets tas = (TableModelAllSeasonTickets) tableCards.getModel();
+                tas.setCards(cards);
+                tas.refreshDatas();
+            }
+        });
+
     }
 }
