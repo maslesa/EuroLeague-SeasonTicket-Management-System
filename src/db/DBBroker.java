@@ -672,7 +672,7 @@ public class DBBroker {
     }
 
     public String getQRCodeString(SeasonCard selectedCard) {
-        
+
         try {
             String query = "SELECT u.idDomacin, u.idSezona, u.idUtakmica FROM utakmica u WHERE u.idSezona IN (SELECT k.idSezona FROM karta k JOIN sezonskaKarta sk ON (k.idkarta = sk.idKarta) WHERE sk.idSezonskaKarta = ?) AND u.idDomacin IN (SELECT k.idKlub FROM karta k JOIN sezonskakarta sk ON (k.idkarta = sk.idKarta) WHERE sk.idSezonskaKarta = ?) AND u.dateTime in (SELECT MIN(dateTime) FROM utakmica u WHERE u.idDomacin IN (SELECT k.idklub FROM karta k JOIN sezonskakarta sk ON (k.idkarta = sk.idKarta) WHERE sk.idSezonskaKarta = ?) AND u.dateTime > NOW())";
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
@@ -680,16 +680,16 @@ public class DBBroker {
             ps.setInt(2, selectedCard.getIdSeasonCard());
             ps.setInt(3, selectedCard.getIdSeasonCard());
             ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 String idDomacin = String.valueOf(rs.getInt("idDomacin"));
                 String idSezona = String.valueOf(rs.getInt("idSezona"));
                 String idUtakmica = String.valueOf(rs.getInt("idUtakmica"));
-                
-                String qrcode = String.valueOf(selectedCard.getIdSeasonCard())+";"+idDomacin+";"+idSezona+";"+idUtakmica;
+
+                String qrcode = String.valueOf(selectedCard.getIdSeasonCard()) + ";" + idDomacin + ";" + idSezona + ";" + idUtakmica;
                 return qrcode;
-                
+
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -697,7 +697,7 @@ public class DBBroker {
     }
 
     public LocalDateTime getDateTimeOfLatestMatch(SeasonCard selectedCard) {
-        
+
         try {
             String query = "SELECT u.dateTime FROM utakmica u WHERE u.idSezona IN (SELECT k.idSezona FROM karta k JOIN sezonskaKarta sk ON (k.idkarta = sk.idKarta) WHERE sk.idSezonskaKarta = ?) AND u.idDomacin IN (SELECT k.idKlub FROM karta k JOIN sezonskakarta sk ON (k.idkarta = sk.idKarta) WHERE sk.idSezonskaKarta = ?) AND u.dateTime in (SELECT MIN(dateTime) FROM utakmica u WHERE u.idDomacin IN (SELECT k.idklub FROM karta k JOIN sezonskakarta sk ON (k.idkarta = sk.idKarta) WHERE sk.idSezonskaKarta = ?) AND u.dateTime > NOW())";
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
@@ -705,12 +705,12 @@ public class DBBroker {
             ps.setInt(2, selectedCard.getIdSeasonCard());
             ps.setInt(3, selectedCard.getIdSeasonCard());
             ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 Timestamp datets = rs.getTimestamp("u.dateTime");
                 LocalDateTime date = datets.toLocalDateTime();
                 return date;
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -738,7 +738,7 @@ public class DBBroker {
             String query = "SELECT * FROM navijac WHERE idNavijac IN (SELECT MAX(idNavijac) FROM navijac)";
             Statement st = Konekcija.getInstance().getCon().createStatement();
             ResultSet rs = st.executeQuery(query);
-            while(rs.next()){
+            while (rs.next()) {
                 int idFan = rs.getInt("idNavijac");
                 String name = rs.getString("name");
                 String surname = rs.getString("surname");
@@ -748,9 +748,9 @@ public class DBBroker {
                 LocalDate birthday = birthdayDB.toLocalDate();
                 String phone = rs.getString("phone");
                 String password = rs.getString("password");
-                
+
                 fan = new Fan(idFan, name, surname, username, email, birthday, phone, password);
-                
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
@@ -765,40 +765,38 @@ public class DBBroker {
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
             ps.setInt(1, idHost);
             ResultSet rs = ps.executeQuery();
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 String naziv = rs.getString("naziv");
                 return naziv;
             }
-            
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return "N/A";
-        
+
     }
 
     public int getIdHost(Match match) {
-        
+
         try {
             String query = "SELECT idDomacin FROM utakmica WHERE idUtakmica = ?";
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
             ps.setInt(1, match.getIdMatch());
             ResultSet rs = ps.executeQuery();
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 int id = rs.getInt("idDomacin");
                 return id;
             }
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return 0;
-        
-        
+
     }
 
     public int getNumberOfCardTypes() {
@@ -807,7 +805,7 @@ public class DBBroker {
             String query = "SELECT COUNT(*) FROM tipkarte";
             Statement st = Konekcija.getInstance().getCon().createStatement();
             ResultSet rs = st.executeQuery(query);
-            while(rs.next()){
+            while (rs.next()) {
                 number = rs.getInt("COUNT(*)");
             }
         } catch (SQLException ex) {
@@ -817,31 +815,139 @@ public class DBBroker {
     }
 
     public boolean getCorrectSeason(Club club, Season season, int numOfCardTypes) {
-        
+
         Season s;
         int rows = 0;
-        
+
         try {
             String query = "SELECT COUNT(*) FROM karta WHERE idKlub = ? AND idSezona = ?";
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
             ps.setInt(1, club.getIdKlub());
             ps.setInt(2, season.getIdSezona());
             ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 rows = rs.getInt("COUNT(*)");
             }
-            if(rows == numOfCardTypes){
+            if (rows == numOfCardTypes) {
                 return true;
             }
-            
+
             return false;
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return false;
     }
 
-   
+    public boolean getAllSeasonsWithZeroCardDefined(Club club, Season season) {
+        try {
+            String query = "SELECT COUNT(*) FROM karta WHERE idKlub = ? AND idSezona = ?";
+
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, club.getIdKlub());
+            ps.setInt(2, season.getIdSezona());
+
+            ResultSet rs = ps.executeQuery();
+
+            int rows = 0;
+
+            while (rs.next()) {
+                rows = rs.getInt("COUNT(*)");
+
+                if (rows == 0) {
+                    return true;
+                }
+
+            }
+
+            return false;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public boolean deleteSelectedSeasonTicket(Card selectedCard) {
+        try {
+            String query = "DELETE FROM karta WHERE idkarta = ?";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, selectedCard.getIdCard());
+            int ra = ps.executeUpdate();
+            if (ra > 0) {
+                return true;
+            }
+            return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public List<Card> getAllCardsBySeason(Club club, Season oldSeason) {
+
+        List<Card> cards = new ArrayList<>();
+        try {
+            String query = "SELECT k.*, tk.naziv FROM karta k JOIN tipkarte tk ON (k.idTipKarta = tk.idTipKarte) WHERE k.idKlub = ? AND k.idSezona = ?";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, club.getIdKlub());
+            ps.setInt(2, oldSeason.getIdSezona());
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("idkarta");
+                double price = rs.getDouble("cena");
+                int vacances = rs.getInt("slobodnaMesta");
+                int idClub = rs.getInt("idKlub");
+                int idSeason = rs.getInt("idSezona");
+                int idCardType = rs.getInt("idTipKarta");
+                String seasonName = rs.getString("naziv");
+
+                Card card = new Card(idClub, price, vacances, idSeason, idClub, idCardType, seasonName);
+
+                cards.add(card);
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return cards;
+    }
+
+    public boolean setValuesForNewSeason(Season selectedSeason, List<Card> cards, Club club) {
+        int ra = 0;
+
+        for (int i = 0; i < cards.size(); i++) {
+            int rowsAffected = 0;
+            try {
+                String query = "INSERT INTO karta(cena, slobodnaMesta, idKlub, idSezona, idTipKarta) VALUES (?, ?, ?, ?, ?)";
+                PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+                ps.setDouble(1, cards.get(i).getPrice());
+                ps.setInt(2, cards.get(i).getVacances());
+                ps.setInt(3, club.getIdKlub());
+                ps.setInt(4, selectedSeason.getIdSezona());
+                ps.setInt(5, cards.get(i).getIdCardType());
+                
+                rowsAffected = ps.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    ra++;
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        if (ra > 0) {
+            return true;
+        }
+        return false;
+
+    }
 
 }

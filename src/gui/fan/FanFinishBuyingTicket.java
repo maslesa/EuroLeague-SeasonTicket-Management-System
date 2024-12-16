@@ -322,7 +322,7 @@ public class FanFinishBuyingTicket extends javax.swing.JFrame {
             System.out.println("Email sent successfully.");
         } catch (MessagingException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(rootPane, "Failed to send email: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(rootPane, "Failed to send email!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

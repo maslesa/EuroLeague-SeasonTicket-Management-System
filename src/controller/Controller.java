@@ -176,5 +176,21 @@ public class Controller {
         return dbbroker.getCorrectSeason(club, season, numOfCardTypes);
     }
 
+    public boolean getAllSeasonsWithZeroCardDefined(Club club, Season season) {
+        return dbbroker.getAllSeasonsWithZeroCardDefined(club, season);
+    }
+
+    public boolean deleteSelectedSeasonTicket(Card selectedCard) {
+        return dbbroker.deleteSelectedSeasonTicket(selectedCard);
+    }
+
+    public List<Card> getAllCardsBySeason(Club club, Season oldSeason) {
+        return dbbroker.getAllCardsBySeason(club, oldSeason);
+    }
+
+    public boolean setValuesForNewSeason(Season selectedSeason, List<Card> cards, Club club) {
+        return dbbroker.setValuesForNewSeason(selectedSeason, cards, club);
+    }
+
 
 }

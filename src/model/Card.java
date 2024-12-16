@@ -30,6 +30,18 @@ public class Card {
         this.seasonName = seasonName;
         this.cardTypeName = cardTypeName;
     }
+
+    public Card(int idCard, double price, int vacances, int idSeason, int idClub, int idCardType, String cardTypeName) {
+        this.idCard = idCard;
+        this.price = price;
+        this.vacances = vacances;
+        this.idSeason = idSeason;
+        this.idClub = idClub;
+        this.idCardType = idCardType;
+        this.cardTypeName = cardTypeName;
+    }
+
+    
     
     
 
@@ -131,4 +143,12 @@ public class Card {
         this.clubName = clubName;
     }
 
+    @Override
+    public String toString() {
+        return "Card{" + "idCard=" + idCard + ", price=" + price + ", vacances=" + vacances + ", idSeason=" + idSeason + ", idClub=" + idClub + ", idCardType=" + idCardType + ", cardTypeName=" + cardTypeName + '}';
+    }
+
+  
+    
+    
 }
