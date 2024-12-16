@@ -192,5 +192,13 @@ public class Controller {
         return dbbroker.setValuesForNewSeason(selectedSeason, cards, club);
     }
 
+    public boolean deleteSelectedMatch(Match selectedMatch) {
+        return dbbroker.deleteSelectedMatch(selectedMatch);
+    }
+
+    public boolean updateMatch(Match match, LocalDateTime newDate) {
+        return dbbroker.updateMatch(match, newDate);
+    }
+
 
 }

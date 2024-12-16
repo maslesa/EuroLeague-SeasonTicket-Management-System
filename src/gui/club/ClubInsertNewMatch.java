@@ -23,8 +23,11 @@ import model.Match;
 public class ClubInsertNewMatch extends javax.swing.JFrame {
 
     Club club;
+    Match match;
+    boolean update = false;
     List<Season> seasons;
     List<Club> clubs;
+    Season selectedSeason;
     Controller k = Controller.getInstance();
     int[] minutes = {00, 15, 30, 45};
 
@@ -34,6 +37,8 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
     public ClubInsertNewMatch(Club club) {
         initComponents();
         this.club = club;
+        jbtnUpdateMatch.setVisible(false);
+        jbtnUpdateNew.setVisible(true);
         seasons = k.getAllSeasons();
         for (Season s : seasons) {
             jcbSeason.addItem(s);
@@ -45,7 +50,34 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
             }
         }
         txtHost.setText(club.getFullName());
+        txtSeason.setVisible(false);
+        txtGuest.setVisible(false);
         addListener();
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    public ClubInsertNewMatch(Club club, Match match) {
+        initComponents();
+        this.update = true;
+        this.club = club;
+        this.match = match;
+        jbtnUpdateNew.setVisible(false);
+        jbtnUpdateMatch.setVisible(true);
+        jcbSeason.setVisible(false);
+        jcbGuest.setVisible(false);
+        txtSeason.setText(match.getSeasonName());
+        txtHost.setText(match.getHostName());
+        txtGuest.setText(match.getGuestName());
+        int year = Integer.parseInt(match.getSeasonName().substring(0, 4));
+        jcbYear.addItem(year);
+        jcbYear.addItem(year + 1);
+        addListener();
+        jcbYear.setSelectedItem(match.getDateTime().getYear());
+        jcbMonth.setSelectedItem(getMonthName(match.getDateTime().getMonthValue()));
+        jcbDay.setSelectedItem(match.getDateTime().getDayOfMonth());
+        jcbHours.setSelectedItem(match.getDateTime().getHour());
+        jcbMinutes.setSelectedItem(match.getDateTime().getMinute());
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -66,7 +98,7 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jcbGuest = new javax.swing.JComboBox<>();
-        txtHost = new javax.swing.JTextField();
+        txtGuest = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -80,10 +112,15 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
         jcbHours = new javax.swing.JComboBox<>();
         jcbMinutes = new javax.swing.JComboBox<>();
         jbtnUpdateNew = new javax.swing.JButton();
+        txtSeason = new javax.swing.JTextField();
+        txtHost = new javax.swing.JTextField();
+        jbtnUpdateMatch = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sport tickets shop | Insert new match");
+        setMinimumSize(new java.awt.Dimension(595, 550));
         setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnGoBack1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btnGoBack1.setText("<");
@@ -92,6 +129,7 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
                 btnGoBack1ActionPerformed(evt);
             }
         });
+        getContentPane().add(btnGoBack1, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 26, 47, 47));
 
         welcomeMessage.setEditable(false);
         welcomeMessage.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -103,57 +141,84 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
                 welcomeMessageActionPerformed(evt);
             }
         });
+        getContentPane().add(welcomeMessage, new org.netbeans.lib.awtextra.AbsoluteConstraints(123, 21, 369, 52));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("Season:");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 105, 86, 34));
+
+        jcbSeason.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbSeasonActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jcbSeason, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 110, 260, 40));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText("Host:");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 158, 86, 34));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("Guest:");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 210, 86, 34));
 
-        txtHost.setEditable(false);
-        txtHost.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        getContentPane().add(jcbGuest, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 210, 260, 34));
+
+        txtGuest.setEditable(false);
+        txtGuest.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        getContentPane().add(txtGuest, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 210, 260, 34));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel4.setText("Date:");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 282, 86, 34));
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel10.setText("Year");
+        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(218, 251, 63, 28));
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setText("Month");
+        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(329, 251, 57, 28));
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel12.setText("Day");
+        getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 251, 34, 28));
 
         jcbYear.setPreferredSize(new java.awt.Dimension(100, 22));
+        getContentPane().add(jcbYear, new org.netbeans.lib.awtextra.AbsoluteConstraints(204, 285, 92, 30));
+
+        getContentPane().add(jcbMonth, new org.netbeans.lib.awtextra.AbsoluteConstraints(302, 285, 101, 30));
 
         jcbDay.setPreferredSize(new java.awt.Dimension(70, 22));
+        getContentPane().add(jcbDay, new org.netbeans.lib.awtextra.AbsoluteConstraints(409, 285, 54, 30));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel5.setText("Time:");
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 353, 86, 34));
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel13.setText("Hour");
+        getContentPane().add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 322, 63, 28));
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel14.setText("Minutes");
+        getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(316, 322, 63, 28));
 
         jcbHours.setPreferredSize(new java.awt.Dimension(100, 22));
+        getContentPane().add(jcbHours, new org.netbeans.lib.awtextra.AbsoluteConstraints(204, 356, 92, 30));
 
         jcbMinutes.setPreferredSize(new java.awt.Dimension(100, 22));
+        getContentPane().add(jcbMinutes, new org.netbeans.lib.awtextra.AbsoluteConstraints(302, 356, 92, 30));
 
         jbtnUpdateNew.setText("Insert match");
         jbtnUpdateNew.addActionListener(new java.awt.event.ActionListener() {
@@ -161,122 +226,35 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
                 jbtnUpdateNewActionPerformed(evt);
             }
         });
+        getContentPane().add(jbtnUpdateNew, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 430, 176, 41));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(btnGoBack1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jcbSeason, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtHost))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jcbGuest, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jbtnUpdateNew, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(layout.createSequentialGroup()
-                                                    .addGap(16, 16, 16)
-                                                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addGap(33, 33, 33)
-                                                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGroup(layout.createSequentialGroup()
-                                                    .addComponent(jcbHours, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(jcbMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jcbYear, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jcbMonth, 0, 101, Short.MAX_VALUE)
-                                                .addGap(6, 6, 6))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(14, 14, 14)
-                                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(23, 23, 23)))
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jcbDay, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(9, 9, 9)))))))
-                        .addGap(40, 40, 40))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(welcomeMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(77, 77, 77))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnGoBack1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(welcomeMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(32, 32, 32)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jcbSeason, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtHost, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jcbGuest, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jcbYear, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jcbMonth, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jcbDay, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(3, 3, 3)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jcbHours, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jcbMinutes, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
-                .addComponent(jbtnUpdateNew, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35))
-        );
+        txtSeason.setEditable(false);
+        txtSeason.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        getContentPane().add(txtSeason, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 110, 260, 34));
+
+        txtHost.setEditable(false);
+        txtHost.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        getContentPane().add(txtHost, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 160, 260, 34));
+
+        jbtnUpdateMatch.setText("Update match");
+        jbtnUpdateMatch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnUpdateMatchActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jbtnUpdateMatch, new org.netbeans.lib.awtextra.AbsoluteConstraints(218, 428, 176, 41));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGoBack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBack1ActionPerformed
-        ClubHomePage chp = new ClubHomePage(club);
-        dispose();
+        if(update){
+            ClubAllMatches cam = new ClubAllMatches(club);
+            dispose();
+        }else{
+            ClubHomePage chp = new ClubHomePage(club);
+            dispose();
+        }
     }//GEN-LAST:event_btnGoBack1ActionPerformed
 
     private void welcomeMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_welcomeMessageActionPerformed
@@ -303,6 +281,21 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jbtnUpdateNewActionPerformed
 
+    private void jcbSeasonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbSeasonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jcbSeasonActionPerformed
+
+    private void jbtnUpdateMatchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnUpdateMatchActionPerformed
+        LocalDateTime newDate = makeDate();
+        if(k.updateMatch(match, newDate)){
+            JOptionPane.showMessageDialog(rootPane, "Match has been updated", "Match updated", JOptionPane.INFORMATION_MESSAGE);
+            ClubAllMatches cam = new ClubAllMatches(club);
+            dispose();
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jbtnUpdateMatchActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGoBack1;
     private javax.swing.JLabel jLabel1;
@@ -315,6 +308,7 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JButton jbtnUpdateMatch;
     private javax.swing.JButton jbtnUpdateNew;
     private javax.swing.JComboBox<Integer> jcbDay;
     private javax.swing.JComboBox<Club> jcbGuest;
@@ -323,7 +317,9 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jcbMonth;
     private javax.swing.JComboBox<Season> jcbSeason;
     private javax.swing.JComboBox<Integer> jcbYear;
+    private javax.swing.JTextField txtGuest;
     private javax.swing.JTextField txtHost;
+    private javax.swing.JTextField txtSeason;
     private javax.swing.JTextField welcomeMessage;
     // End of variables declaration//GEN-END:variables
 
@@ -332,8 +328,9 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
         jcbSeason.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Season selectedSeason = (Season) jcbSeason.getSelectedItem();
+                selectedSeason = (Season) jcbSeason.getSelectedItem();
                 String seasonName = selectedSeason.getName().substring(0, 4);
+
                 //System.out.println(seasonName);
                 int season = Integer.parseInt(seasonName);
                 jcbYear.removeAllItems();
@@ -653,4 +650,5 @@ public class ClubInsertNewMatch extends javax.swing.JFrame {
                 return "January";
         }
     }
+
 }

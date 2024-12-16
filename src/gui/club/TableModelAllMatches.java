@@ -24,6 +24,14 @@ public class TableModelAllMatches extends AbstractTableModel {
     public TableModelAllMatches(List<Match> matches ) {
         this.matches = matches;
     }
+
+    public List<Match> getMatches() {
+        return matches;
+    }
+
+    public void setMatches(List<Match> matches) {
+        this.matches = matches;
+    }
     
     
     @Override
@@ -77,6 +85,10 @@ public class TableModelAllMatches extends AbstractTableModel {
 
     Match getMatch(int rowIndex) {
         return matches.get(rowIndex);
+    }
+
+    void refreshDatas() {
+        fireTableDataChanged();
     }
     
     

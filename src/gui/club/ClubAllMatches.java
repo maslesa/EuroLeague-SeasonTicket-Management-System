@@ -5,8 +5,11 @@
 package gui.club;
 
 import controller.Controller;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import model.Club;
 import java.util.*;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -36,6 +39,8 @@ public class ClubAllMatches extends javax.swing.JFrame {
         jTableAllMatches.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jTableAllMatches.setModel(tmam);
         jbtnMatchDetails.setVisible(false);
+        jbtnMatchDelete.setVisible(false);
+        jbtnMatchUpdate.setVisible(false);
         addListener();
         setLocationRelativeTo(null);
         setVisible(true);
@@ -55,10 +60,14 @@ public class ClubAllMatches extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableAllMatches = new javax.swing.JTable();
         jbtnMatchDetails = new javax.swing.JButton();
+        jbtnMatchDelete = new javax.swing.JButton();
+        jbtnMatchUpdate = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sport tickets shop | All matches");
+        setMinimumSize(new java.awt.Dimension(970, 665));
         setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnGoBack.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btnGoBack.setText("<");
@@ -67,6 +76,7 @@ public class ClubAllMatches extends javax.swing.JFrame {
                 btnGoBackActionPerformed(evt);
             }
         });
+        getContentPane().add(btnGoBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(28, 28, 47, 47));
 
         jTextField1.setEditable(false);
         jTextField1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -78,6 +88,7 @@ public class ClubAllMatches extends javax.swing.JFrame {
                 jTextField1ActionPerformed(evt);
             }
         });
+        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(352, 25, 274, 49));
 
         jTableAllMatches.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -92,46 +103,31 @@ public class ClubAllMatches extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTableAllMatches);
 
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(91, 114, 789, 400));
+
         jbtnMatchDetails.setText("View match details");
         jbtnMatchDetails.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbtnMatchDetailsActionPerformed(evt);
             }
         });
+        getContentPane().add(jbtnMatchDetails, new org.netbeans.lib.awtextra.AbsoluteConstraints(383, 546, 217, 45));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(btnGoBack, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(277, 277, 277)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(91, 91, 91)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 789, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(95, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jbtnMatchDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(374, 374, 374))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnGoBack, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(39, 39, 39)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jbtnMatchDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
-        );
+        jbtnMatchDelete.setText("Delete match");
+        jbtnMatchDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnMatchDeleteActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jbtnMatchDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(91, 546, 217, 45));
+
+        jbtnMatchUpdate.setText("Update match");
+        jbtnMatchUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnMatchUpdateActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jbtnMatchUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(663, 546, 217, 45));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -150,13 +146,33 @@ public class ClubAllMatches extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_jbtnMatchDetailsActionPerformed
 
+    private void jbtnMatchDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnMatchDeleteActionPerformed
+        int choice = JOptionPane.showConfirmDialog(rootPane, "Are you sure you want delete this match?", "Delete match", JOptionPane.YES_NO_OPTION);
+        if(choice == JOptionPane.YES_OPTION){
+            if(k.deleteSelectedMatch(selectedMatch)){
+                refreshTable();
+                JOptionPane.showMessageDialog(rootPane, "Match has been deleted successfuly", "Match deleted", JOptionPane.INFORMATION_MESSAGE);
+                jbtnMatchDelete.setVisible(false);
+                jbtnMatchDetails.setVisible(false);
+                jbtnMatchUpdate.setVisible(false);
+            }
+        }
+    }//GEN-LAST:event_jbtnMatchDeleteActionPerformed
+
+    private void jbtnMatchUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnMatchUpdateActionPerformed
+        ClubInsertNewMatch cinm = new ClubInsertNewMatch(club, selectedMatch);
+        dispose();
+    }//GEN-LAST:event_jbtnMatchUpdateActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGoBack;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableAllMatches;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton jbtnMatchDelete;
     private javax.swing.JButton jbtnMatchDetails;
+    private javax.swing.JButton jbtnMatchUpdate;
     // End of variables declaration//GEN-END:variables
 
     private void addListener() {
@@ -167,10 +183,32 @@ public class ClubAllMatches extends javax.swing.JFrame {
                     jbtnMatchDetails.setVisible(true);
                     int rowIndex = jTableAllMatches.getSelectedRow();
                     selectedMatch = tmam.getMatch(rowIndex);
+                    if(!isFinished(selectedMatch) && selectedMatch.getHostName().equals(club.getFullName())){
+                        jbtnMatchDelete.setVisible(true);
+                        jbtnMatchUpdate.setVisible(true);
+                    }else{
+                        jbtnMatchDelete.setVisible(false);
+                        jbtnMatchUpdate.setVisible(false);
+                    }
                 } else {
                     jbtnMatchDetails.setVisible(false);
                 }
             }
+
+            private boolean isFinished(Match selectedMatch) {
+                Duration duration = Duration.between(LocalDateTime.now(), selectedMatch.getDateTime());
+                if(duration.toHours() <= 3 && duration.isNegative()){
+                    return true;
+                }
+                return false;
+            }
         });
+    }
+
+    private void refreshTable() {
+        TableModelAllMatches tmal = (TableModelAllMatches) jTableAllMatches.getModel();
+        matches = k.getAllMatches(club);
+        tmal.setMatches(matches);
+        tmal.refreshDatas();
     }
 }

@@ -950,4 +950,42 @@ public class DBBroker {
 
     }
 
+    public boolean deleteSelectedMatch(Match selectedMatch) {
+        try {
+            int ra = 0;
+            
+            String query = "DELETE FROM utakmica WHERE idUtakmica = ?";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, selectedMatch.getIdMatch());
+            ra = ps.executeUpdate();
+            
+            if(ra > 0) return true;
+            
+            return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
+
+    public boolean updateMatch(Match match, LocalDateTime newDate) {
+        try {
+            String query = "UPDATE utakmica SET dateTime = ? WHERE idUtakmica = ?";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            Timestamp ts = Timestamp.valueOf(newDate);
+            ps.setTimestamp(1, ts);
+            ps.setInt(2, match.getIdMatch());
+            
+            int ra = ps.executeUpdate();
+            if(ra > 0) return true;
+            return false;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+    }
+
 }
