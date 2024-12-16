@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
-import models.Match;
+import model.Match;
 
 /**
  *

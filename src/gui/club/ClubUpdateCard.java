@@ -6,10 +6,10 @@ package gui.club;
 
 import controller.Controller;
 import javax.swing.JOptionPane;
-import models.Card;
-import models.CardType;
-import models.Club;
-import models.Season;
+import model.Card;
+import model.CardType;
+import model.Club;
+import model.Season;
 
 /**
  *
@@ -22,16 +22,18 @@ public class ClubUpdateCard extends javax.swing.JFrame {
     CardType cardType;
     Card card;
     Controller k = Controller.getInstance();
+    int fromTable = 0;
 
     /**
      * Creates new form ClubUpdateCard
      */
-    public ClubUpdateCard(Club club, Season season, CardType cardType, Card newCard) {
+    public ClubUpdateCard(Club club, Season season, CardType cardType, Card newCard, int fromTable) {
         initComponents();
         this.club = club;
         this.season = season;
         this.cardType = cardType;
         this.card = newCard;
+        this.fromTable = fromTable;
         txtSeason.setText(season.getName());
         txtCardType.setText(cardType.getName());
         txtVacances.setText(String.valueOf(card.getVacances()));
@@ -43,10 +45,11 @@ public class ClubUpdateCard extends javax.swing.JFrame {
         setVisible(true);
     }
 
-    public ClubUpdateCard(Card newCard, Club club) {
+    public ClubUpdateCard(Card newCard, Club club, int fromTable) {
         initComponents();
         this.card = newCard;
         this.club = club;
+        this.fromTable = fromTable;
         txtSeason.setText(newCard.getSeasonName());
         txtCardType.setText(newCard.getCardTypeName());
         txtVacances.setText(String.valueOf(newCard.getVacances()));
@@ -206,8 +209,13 @@ public class ClubUpdateCard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
-        ClubNewSeasonTicketPage cnstp = new ClubNewSeasonTicketPage(club);
-        dispose();
+        if (fromTable == 1) {
+            ClubAllSeasonTickets cast = new ClubAllSeasonTickets(club);
+            dispose();
+        } else {
+            ClubNewSeasonTicketPage cnstp = new ClubNewSeasonTicketPage(club);
+            dispose();
+        }
     }//GEN-LAST:event_btnGoBackActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed

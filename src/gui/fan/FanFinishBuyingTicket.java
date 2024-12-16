@@ -5,10 +5,17 @@
 package gui.fan;
 
 import controller.Controller;
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.mail.PasswordAuthentication;
 import javax.swing.JOptionPane;
-import models.Card;
-import models.Fan;
-
+import model.Card;
+import model.Fan;
 
 /**
  *
@@ -246,8 +253,8 @@ public class FanFinishBuyingTicket extends javax.swing.JFrame {
 
     private void jButtonBuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuyActionPerformed
         if (k.insertCards(card, fan, numOfCards) && k.updateCardVacances(card, numOfCards)) {
-            JOptionPane.showMessageDialog(rootPane, "Buying season ticket/s was successfully", "Successfull", JOptionPane.INFORMATION_MESSAGE);
-            //TODO: send email
+            sendEmail(fan.getEmail());
+            JOptionPane.showMessageDialog(rootPane, "Thank you for purchasing season tickets. Bill was sent to your email.", "Successful", JOptionPane.INFORMATION_MESSAGE);
             FanHomePage fhp = new FanHomePage(fan);
             dispose();
         } else {
@@ -276,5 +283,47 @@ public class FanFinishBuyingTicket extends javax.swing.JFrame {
     private javax.swing.JTextField txtSeason;
     private javax.swing.JTextField txtTotalPrice;
     // End of variables declaration//GEN-END:variables
+
+    private void sendEmail(String email) {
+        final String fromEmail = "ljubomirmaslesa@gmail.com";
+        final String password = "qlnc zsbq goks xigx";
+        final String subject = "Season Ticket Purchase Confirmation";
+        final String body = "Dear " + fan.getName() + ",\n\n"
+                + "Thank you for purchasing season tickets for " + card.getClubName() + ".\n"
+                + "Details:\n"
+                + "Season: " + card.getSeasonName() + "\n"
+                + "Card Type: " + card.getCardTypeName() + "\n"
+                + "Number of Cards: " + numOfCards + "\n"
+                + "Total Price: " + (numOfCards * card.getPrice()) + " RSD\n\n"
+                + "Best regards,\nSport Tickets Shop";
+
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new javax.mail.PasswordAuthentication(fromEmail, password);
+            }
+        });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(fromEmail));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+            message.setSubject(subject);
+            message.setText(body);
+
+            Transport.send(message);
+
+            System.out.println("Email sent successfully.");
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(rootPane, "Failed to send email: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
 }

@@ -2,28 +2,28 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package models;
+package model;
 
 /**
  *
  * @author Ljubomir
  */
-public class CardType {
+public class Season {
     
-    int idCardType;
+    int idSezona;
     String name;
 
-    public CardType(int idCardType, String name) {
-        this.idCardType = idCardType;
+    public Season(int idSezona, String name) {
+        this.idSezona = idSezona;
         this.name = name;
     }
 
-    public int getIdCardType() {
-        return idCardType;
+    public int getIdSezona() {
+        return idSezona;
     }
 
-    public void setIdCardType(int idCardType) {
-        this.idCardType = idCardType;
+    public void setIdSezona(int idSezona) {
+        this.idSezona = idSezona;
     }
 
     public String getName() {

@@ -4,7 +4,7 @@
  */
 package gui.fan;
 
-import models.Fan;
+import model.Fan;
 import gui.login.LoginPage;
 import gui.fan.FanProfilePage;
 import java.time.LocalDate;

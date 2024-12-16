@@ -10,11 +10,11 @@ import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
 import java.time.Month;
 import javax.swing.JSpinner;
-import models.Club;
-import models.Season;
+import model.Club;
+import model.Season;
 import java.util.*;
 import javax.swing.JOptionPane;
-import models.Match;
+import model.Match;
 
 /**
  *

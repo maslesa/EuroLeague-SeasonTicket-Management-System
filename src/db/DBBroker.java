@@ -4,7 +4,7 @@
  */
 package db;
 
-import models.Fan;
+import model.Fan;
 import gui.login.LoginPage;
 import java.awt.HeadlessException;
 import java.sql.*;
@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import models.Card;
-import models.CardType;
-import models.Club;
-import models.Match;
-import models.Season;
-import models.SeasonCard;
+import model.Card;
+import model.CardType;
+import model.Club;
+import model.Match;
+import model.Season;
+import model.SeasonCard;
 
 /**
  *
@@ -685,7 +685,7 @@ public class DBBroker {
                 String idSezona = String.valueOf(rs.getInt("idSezona"));
                 String idUtakmica = String.valueOf(rs.getInt("idUtakmica"));
                 
-                String qrcode = idDomacin+";"+idSezona+";"+idUtakmica;
+                String qrcode = String.valueOf(selectedCard.getIdSeasonCard())+";"+idDomacin+";"+idSezona+";"+idUtakmica;
                 return qrcode;
                 
             }
@@ -719,12 +719,13 @@ public class DBBroker {
 
     public void setQRCode(String qrCodeString, SeasonCard selectedCard) {
         try {
-            String query = "UPDATE sezonskakarta sk JOIN karta k ON sk.idKarta = k.idKarta SET sk.qrCode = ?, sk.idUtakmica = ? WHERE (k.idKlub, k.idSezona) IN (SELECT t.idKlub, t.idSezona FROM (SELECT k.idKlub, k.idSezona FROM karta k JOIN sezonskakarta sk ON k.idKarta = sk.idKarta WHERE sk.idSezonskaKarta = ?) AS t)";
+            String query = "UPDATE sezonskakarta sk JOIN karta k ON sk.idKarta = k.idKarta SET sk.qrCode = ?, sk.idUtakmica = ? WHERE sk.idSezonskaKarta = ? AND (k.idKlub, k.idSezona) IN (SELECT t.idKlub, t.idSezona FROM (SELECT k.idKlub, k.idSezona FROM karta k JOIN sezonskakarta sk ON k.idKarta = sk.idKarta WHERE sk.idSezonskaKarta = ?) AS t)";
             PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
             ps.setString(1, qrCodeString);
             String[] codes = qrCodeString.split(";");
-            ps.setInt(2, Integer.valueOf(codes[2]));
+            ps.setInt(2, Integer.valueOf(codes[3]));
             ps.setInt(3, selectedCard.getIdSeasonCard());
+            ps.setInt(4, selectedCard.getIdSeasonCard());
             int ra = ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
@@ -798,6 +799,47 @@ public class DBBroker {
         return 0;
         
         
+    }
+
+    public int getNumberOfCardTypes() {
+        int number = 0;
+        try {
+            String query = "SELECT COUNT(*) FROM tipkarte";
+            Statement st = Konekcija.getInstance().getCon().createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while(rs.next()){
+                number = rs.getInt("COUNT(*)");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return number;
+    }
+
+    public boolean getCorrectSeason(Club club, Season season, int numOfCardTypes) {
+        
+        Season s;
+        int rows = 0;
+        
+        try {
+            String query = "SELECT COUNT(*) FROM karta WHERE idKlub = ? AND idSezona = ?";
+            PreparedStatement ps = Konekcija.getInstance().getCon().prepareStatement(query);
+            ps.setInt(1, club.getIdKlub());
+            ps.setInt(2, season.getIdSezona());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                rows = rs.getInt("COUNT(*)");
+            }
+            if(rows == numOfCardTypes){
+                return true;
+            }
+            
+            return false;
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
     }
 
    

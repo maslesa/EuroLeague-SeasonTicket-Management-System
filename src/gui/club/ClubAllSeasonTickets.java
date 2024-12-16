@@ -7,12 +7,13 @@ package gui.club;
 import controller.Controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import models.Club;
+import java.time.LocalDateTime;
+import model.Club;
 import java.util.*;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import models.Card;
+import model.Card;
 
 /**
  *
@@ -25,6 +26,7 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
     TableModelAllSeasonTickets model;
     Card selectedCard;
     List<Card> cards;
+    String currentSeason = makeCurrentSeason();
 
     /**
      * Creates new form ClubAllSeasonTickets
@@ -186,7 +188,7 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
     }//GEN-LAST:event_txtClubNameActionPerformed
 
     private void jbtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnUpdateActionPerformed
-        ClubUpdateCard cuc = new ClubUpdateCard(selectedCard, club);
+        ClubUpdateCard cuc = new ClubUpdateCard(selectedCard, club, 1);
         dispose();
     }//GEN-LAST:event_jbtnUpdateActionPerformed
 
@@ -207,13 +209,28 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting() && tableCards.getSelectedRowCount() == 1) {
-                    jbtnUpdate.setVisible(true);
                     int rowIndex = tableCards.getSelectedRow();
                     selectedCard = model.getCard(rowIndex);
+                    if(checkSeasons(currentSeason, selectedCard.getSeasonName())){
+                        jbtnUpdate.setVisible(true);
+                    }else{
+                        jbtnUpdate.setVisible(false);
+                    }
                 } else {
                     jbtnUpdate.setVisible(false);
                 }
             }
+
+            private boolean checkSeasons(String currentSeason, String seasonName) {
+                String seasonCurr = currentSeason.substring(0, 4);
+                String cardSeason = seasonName.substring(0, 4);
+                int current = Integer.parseInt(seasonCurr);
+                int card = Integer.parseInt(cardSeason);
+                
+                if(card <= current) return false;
+                return true;
+            }
+
         });
 
         jcbSorting.addActionListener(new ActionListener() {
@@ -236,7 +253,7 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
                 } else if (selectedSort.equals("Vacances")) {
                     cards = k.getAllCards(club, "k.slobodnaMesta");
                     refreshTable();
-                }  
+                }
             }
 
             private void refreshTable() {
@@ -246,5 +263,22 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
             }
         });
 
+    }
+
+    private String makeCurrentSeason() {
+        int currentYear = LocalDateTime.now().getYear();
+        int currentMonth = LocalDateTime.now().getMonthValue();
+
+        String season;
+
+        if (currentMonth >= 9 && currentMonth <= 12) {
+            season = String.valueOf(currentYear) + "/" + String.valueOf(currentYear + 1).substring(2);
+            return season;
+        } else if (currentMonth >= 1 && currentMonth <= 8) {
+            season = String.valueOf(currentYear - 1) + "/" + String.valueOf(currentYear).substring(2);
+            return season;
+        }
+
+        return null;
     }
 }

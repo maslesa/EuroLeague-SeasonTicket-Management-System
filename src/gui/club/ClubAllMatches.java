@@ -5,13 +5,13 @@
 package gui.club;
 
 import controller.Controller;
-import models.Club;
+import model.Club;
 import java.util.*;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import jdk.jfr.FlightRecorder;
-import models.Match;
+import model.Match;
 
 /**
  *

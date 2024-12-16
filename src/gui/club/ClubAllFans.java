@@ -7,8 +7,8 @@ package gui.club;
 import controller.Controller;
 import java.util.ArrayList;
 import java.util.List;
-import models.Club;
-import models.Fan;
+import model.Club;
+import model.Fan;
 
 /**
  *

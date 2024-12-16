@@ -5,7 +5,7 @@
 package gui.club;
 
 import gui.login.LoginPage;
-import models.Club;
+import model.Club;
 
 /**
  *
@@ -47,6 +47,7 @@ public class ClubHomePage extends javax.swing.JFrame {
         jMenuItem7 = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItem8 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
@@ -95,6 +96,11 @@ public class ClubHomePage extends javax.swing.JFrame {
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Season Tickets");
+        jMenu3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu3ActionPerformed(evt);
+            }
+        });
 
         jMenuItem7.setText("All season tickets");
         jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
@@ -112,6 +118,14 @@ public class ClubHomePage extends javax.swing.JFrame {
             }
         });
         jMenu3.add(jMenuItem8);
+
+        jMenuItem2.setText("New season");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem2);
 
         jMenuBar1.add(jMenu3);
 
@@ -193,6 +207,15 @@ public class ClubHomePage extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
+    private void jMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu3ActionPerformed
+        
+    }//GEN-LAST:event_jMenu3ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        ClubNewSeason cns = new ClubNewSeason(club);
+        dispose();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -200,6 +223,7 @@ public class ClubHomePage extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;

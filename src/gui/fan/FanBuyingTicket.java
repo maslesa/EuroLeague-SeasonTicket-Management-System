@@ -4,13 +4,16 @@
  */
 package gui.fan;
 
+import model.Club;
+import model.CardType;
+import model.Season;
+import model.Card;
 import controller.Controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import models.Fan;
+import model.Fan;
 import java.util.*;
 import javax.swing.JOptionPane;
-import models.*;
 
 /**
  *

@@ -5,13 +5,13 @@
 package gui.login;
 
 
-import models.Fan;
+import model.Fan;
 import controller.Controller;
 import gui.club.ClubHomePage;
 import gui.fan.FanHomePage;
 import javax.swing.JOptionPane;
 import java.time.LocalDate;
-import models.Club;
+import model.Club;
 /**
  *
  * @author Ljubomir

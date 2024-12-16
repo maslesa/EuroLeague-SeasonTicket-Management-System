@@ -5,12 +5,12 @@
 package gui.fan;
 
 import controller.Controller;
-import models.Fan;
+import model.Fan;
 import java.util.*;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import models.SeasonCard;
+import model.SeasonCard;
 
 /**
  *

@@ -5,7 +5,7 @@
 package gui.login;
 
 import gui.fan.FanHomePage;
-import models.Fan;
+import model.Fan;
 import controller.Controller;
 import java.time.LocalDate;
 import java.awt.HeadlessException;

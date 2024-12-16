@@ -5,7 +5,7 @@
 package gui.fan;
 
 import javax.swing.table.AbstractTableModel;
-import models.SeasonCard;
+import model.SeasonCard;
 import java.util.*;
 import javax.swing.JTable;
 

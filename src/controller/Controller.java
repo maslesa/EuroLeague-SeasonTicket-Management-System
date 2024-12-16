@@ -4,17 +4,17 @@
  */
 package controller;
 
-import models.Fan;
+import model.Fan;
 import db.DBBroker;
 import gui.login.SignupPage;
 import java.time.LocalDateTime;
 import java.util.List;
-import models.Card;
-import models.CardType;
-import models.Club;
-import models.Match;
-import models.Season;
-import models.SeasonCard;
+import model.Card;
+import model.CardType;
+import model.Club;
+import model.Match;
+import model.Season;
+import model.SeasonCard;
 
 /**
  *
@@ -166,6 +166,14 @@ public class Controller {
 
     public int getIdHost(Match match) {
         return dbbroker.getIdHost(match);
+    }
+
+    public int getNumberOfCardTypes() {
+        return dbbroker.getNumberOfCardTypes();
+    }
+
+    public boolean getCorrectSeason(Club club, Season season, int numOfCardTypes) {
+        return dbbroker.getCorrectSeason(club, season, numOfCardTypes);
     }
 
 

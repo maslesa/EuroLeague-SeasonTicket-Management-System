@@ -5,8 +5,8 @@
 package gui.club;
 
 import controller.Controller;
-import models.Club;
-import models.Match;
+import model.Club;
+import model.Match;
 
 /**
  *

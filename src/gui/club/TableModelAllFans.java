@@ -6,7 +6,7 @@ package gui.club;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.*;
-import models.Fan;
+import model.Fan;
 
 
 /**

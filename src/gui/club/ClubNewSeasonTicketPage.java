@@ -4,8 +4,12 @@
  */
 package gui.club;
 
+import model.Club;
+import model.CardType;
+import model.Season;
+import model.Card;
 import controller.Controller;
-import models.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +29,7 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
     List<Card> cards = new ArrayList<>();
     List<Season> seasons = new ArrayList<>();
     List<CardType> cardtypes = new ArrayList<>();
+    String currentSeason = makeCurrentSeason();
 
     /**
      * Creates new form ClubNewSeasonTicketPage
@@ -36,7 +41,9 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
         cardtypes = k.getAllCardTypes();
         cards = k.getAllCardsNew(club);
         for (Season s : seasons) {
-            jcbSeason.addItem(s);
+            if(checkSeasons(currentSeason, s.getName())){
+                jcbSeason.addItem(s);
+            }
         }
         for (CardType ct : cardtypes) {
             jcbCardType.addItem(ct);
@@ -197,8 +204,8 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
         cards = k.getAllCardsNew(club);
         if (cardAlreadyExists(cards, newCard)) {
             int choice = JOptionPane.showConfirmDialog(rootPane, "You have already defined that card! Do you want update it?", "Card already exists", JOptionPane.YES_NO_OPTION);
-            if(choice == JOptionPane.YES_NO_OPTION){
-                ClubUpdateCard cuc = new ClubUpdateCard(club, season, cardType, newCard);
+            if (choice == JOptionPane.YES_NO_OPTION) {
+                ClubUpdateCard cuc = new ClubUpdateCard(club, season, cardType, newCard, 0);
                 dispose();
             }
         } else {
@@ -243,7 +250,9 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
             private boolean vacanceValidation(DocumentEvent e) {
                 try {
                     String vacanceInput = e.getDocument().getText(0, e.getDocument().getLength());
-                    if(!inputsOK()) return false;
+                    if (!inputsOK()) {
+                        return false;
+                    }
                     for (char c : vacanceInput.toCharArray()) {
                         if (!Character.isDigit(c)) {
                             return false;
@@ -271,13 +280,15 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
             }
 
         });
-        
-        txtPrice.getDocument().addDocumentListener(new DocumentListener(){
-            
-            private boolean priceValidation(DocumentEvent e){
+
+        txtPrice.getDocument().addDocumentListener(new DocumentListener() {
+
+            private boolean priceValidation(DocumentEvent e) {
                 try {
                     String priceInput = e.getDocument().getText(0, e.getDocument().getLength());
-                    if(!inputsOK()) return false;
+                    if (!inputsOK()) {
+                        return false;
+                    }
                     for (char c : priceInput.toCharArray()) {
                         if (!Character.isDigit(c)) {
                             return false;
@@ -289,7 +300,7 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
                 }
                 return true;
             }
-            
+
             @Override
             public void insertUpdate(DocumentEvent e) {
                 jbtnDefine.setEnabled(priceValidation(e));
@@ -303,15 +314,46 @@ public class ClubNewSeasonTicketPage extends javax.swing.JFrame {
             @Override
             public void changedUpdate(DocumentEvent e) {
             }
-            
+
         });
-        
+
     }
-    
-    private boolean inputsOK(){
+
+    private boolean inputsOK() {
         String vacances = txtVacances.getText();
         String price = txtPrice.getText();
-        if(vacances.equals("") || price.equals("")) return false;
+        if (vacances.equals("") || price.equals("")) {
+            return false;
+        }
+        return true;
+    }
+
+    private String makeCurrentSeason() {
+        int currentYear = LocalDateTime.now().getYear();
+        int currentMonth = LocalDateTime.now().getMonthValue();
+
+        String season;
+
+        if (currentMonth >= 9 && currentMonth <= 12) {
+            season = String.valueOf(currentYear) + "/" + String.valueOf(currentYear + 1).substring(2);
+            return season;
+        } else if (currentMonth >= 1 && currentMonth <= 8) {
+            season = String.valueOf(currentYear - 1) + "/" + String.valueOf(currentYear).substring(2);
+            return season;
+        }
+
+        return null;
+    }
+
+    private boolean checkSeasons(String currentSeason, String seasonName) {
+        String seasonCurr = currentSeason.substring(0, 4);
+        String cardSeason = seasonName.substring(0, 4);
+        int current = Integer.parseInt(seasonCurr);
+        int card = Integer.parseInt(cardSeason);
+
+        if (card <= current) {
+            return false;
+        }
         return true;
     }
 

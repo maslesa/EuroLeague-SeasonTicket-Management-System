@@ -5,7 +5,7 @@
 package gui.fan;
 
 import controller.Controller;
-import models.Fan;
+import model.Fan;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
