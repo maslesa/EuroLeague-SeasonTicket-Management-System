@@ -28,6 +28,7 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
     Card selectedCard;
     List<Card> cards;
     String currentSeason = makeCurrentSeason();
+    List<Card> currentSeasonCards;
 
     /**
      * Creates new form ClubAllSeasonTickets
@@ -41,6 +42,9 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
         model = new TableModelAllSeasonTickets(cards);
         tableCards.setModel(model);
         tableCards.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        currentSeasonCards = new ArrayList<>();
+        currentSeasonCards = makeCurrentSeasonCards(cards);
+        
         setLocationRelativeTo(null);
         jbtnUpdate.setVisible(false);
         jbtnDelete.setVisible(false);
@@ -66,6 +70,7 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jcbSorting = new javax.swing.JComboBox<>();
         jbtnDelete = new javax.swing.JButton();
+        jcheckboxCurrentSeason = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sport tickets shop | All season tickets");
@@ -121,7 +126,7 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
         });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel1.setText("Sort by:");
 
         jcbSorting.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Season", "Card type", "Card ID", "Price", "Vacances" }));
@@ -133,35 +138,41 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
             }
         });
 
+        jcheckboxCurrentSeason.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jcheckboxCurrentSeason.setText("Current season");
+        jcheckboxCurrentSeason.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jcbSorting, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(256, 256, 256))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtClubName, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jcbSorting, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jcheckboxCurrentSeason, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 582, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(33, 33, 33)
-                        .addComponent(btnGoBack, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(129, 129, 129)
-                        .addComponent(welcomeMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(183, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 582, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(130, 130, 130)
-                .addComponent(jbtnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(64, 64, 64)
-                .addComponent(jbtnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtClubName, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnGoBack, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(129, 129, 129)
+                                .addComponent(welcomeMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(130, 130, 130)
+                        .addComponent(jbtnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(64, 64, 64)
+                        .addComponent(jbtnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(133, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -173,9 +184,13 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtClubName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jcbSorting, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jcbSorting, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jcheckboxCurrentSeason, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
@@ -226,6 +241,7 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
     private javax.swing.JButton jbtnDelete;
     private javax.swing.JButton jbtnUpdate;
     private javax.swing.JComboBox<String> jcbSorting;
+    private javax.swing.JCheckBox jcheckboxCurrentSeason;
     private javax.swing.JTable tableCards;
     private javax.swing.JTextField txtClubName;
     private javax.swing.JTextField welcomeMessage;
@@ -271,23 +287,72 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
                 String selectedSort = (String) jcbSorting.getSelectedItem();
                 System.out.println(selectedSort);
                 if (selectedSort.equals("Season")) {
-                    cards = k.getAllCards(club, "s.naziv");
-                    refreshTable();
+                    if (jcheckboxCurrentSeason.isSelected()) {
+                        cards = k.getAllCards(club, "s.naziv");
+                        currentSeasonCards = makeCurrentSeasonCards(cards);
+                        cards = currentSeasonCards;
+                        refreshTable();
+                    } else {
+                        cards = k.getAllCards(club, "s.naziv");
+                        refreshTable();
+                    }
                 } else if (selectedSort.equals("Card type")) {
-                    cards = k.getAllCards(club, "tk.naziv");
-                    refreshTable();
+                    if (jcheckboxCurrentSeason.isSelected()) {
+                        cards = k.getAllCards(club, "tk.naziv");
+                        currentSeasonCards = makeCurrentSeasonCards(cards);
+                        cards = currentSeasonCards;
+                        refreshTable();
+                    } else {
+                        cards = k.getAllCards(club, "tk.naziv");
+                        refreshTable();
+                    }
                 } else if (selectedSort.equals("Card ID")) {
-                    cards = k.getAllCards(club, "k.idkarta");
-                    refreshTable();
+                    if (jcheckboxCurrentSeason.isSelected()) {
+                        cards = k.getAllCards(club, "k.idkarta");
+                        currentSeasonCards = makeCurrentSeasonCards(cards);
+                        cards = currentSeasonCards;
+                        refreshTable();
+                    } else {
+                        cards = k.getAllCards(club, "k.idkarta");
+                        refreshTable();
+                    }
                 } else if (selectedSort.equals("Price")) {
-                    cards = k.getAllCards(club, "k.cena");
-                    refreshTable();
+                    if (jcheckboxCurrentSeason.isSelected()) {
+                        cards = k.getAllCards(club, "k.cena");
+                        currentSeasonCards = makeCurrentSeasonCards(cards);
+                        cards = currentSeasonCards;
+                        refreshTable();
+                    } else {
+                        cards = k.getAllCards(club, "k.cena");
+                        refreshTable();
+                    }
                 } else if (selectedSort.equals("Vacances")) {
-                    cards = k.getAllCards(club, "k.slobodnaMesta");
-                    refreshTable();
+                    if (jcheckboxCurrentSeason.isSelected()) {
+                        cards = k.getAllCards(club, "k.slobodnaMesta");
+                        currentSeasonCards = makeCurrentSeasonCards(cards);
+                        cards = currentSeasonCards;
+                        refreshTable();
+                    } else {
+                        cards = k.getAllCards(club, "k.slobodnaMesta");
+                        refreshTable();
+                    }
                 }
             }
 
+        });
+
+        jcheckboxCurrentSeason.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jcbSorting.setSelectedItem("Season");
+                if (jcheckboxCurrentSeason.isSelected()) {
+                    cards = currentSeasonCards;
+                    refreshTable();
+                } else {
+                    cards = k.getAllCards(club, "s.naziv");
+                    refreshTable();
+                }
+            }
         });
 
     }
@@ -313,5 +378,15 @@ public class ClubAllSeasonTickets extends javax.swing.JFrame {
         }
 
         return null;
+    }
+
+    private List<Card> makeCurrentSeasonCards(List<Card> cards) {
+        List<Card> currSeasonCards = new ArrayList<>();
+        for (Card card : cards) {
+            if (card.getSeasonName().equals(currentSeason)) {
+                currSeasonCards.add(card);
+            }
+        }
+        return currSeasonCards;
     }
 }
