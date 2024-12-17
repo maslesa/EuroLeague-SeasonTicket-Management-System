@@ -6,6 +6,8 @@ package gui.fan;
 
 import controller.Controller;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -253,7 +255,7 @@ public class FanFinishBuyingTicket extends javax.swing.JFrame {
 
     private void jButtonBuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuyActionPerformed
         if (k.insertCards(card, fan, numOfCards) && k.updateCardVacances(card, numOfCards)) {
-            sendEmail(fan.getEmail());
+            sendEmailAsync(fan.getEmail());
             JOptionPane.showMessageDialog(rootPane, "Thank you for purchasing season tickets. Bill was sent to your email.", "Successful", JOptionPane.INFORMATION_MESSAGE);
             FanHomePage fhp = new FanHomePage(fan);
             dispose();
@@ -324,6 +326,14 @@ public class FanFinishBuyingTicket extends javax.swing.JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(rootPane, "Failed to send email!", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void sendEmailAsync(String email) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(() -> {
+            sendEmail(email);
+        });
+        executorService.shutdown();
     }
 
 }
