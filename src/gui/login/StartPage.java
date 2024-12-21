@@ -27,6 +27,7 @@ public class StartPage extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sport tickets shop");
+        setResizable(false);
 
         lblSpWelcome.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
         lblSpWelcome.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
