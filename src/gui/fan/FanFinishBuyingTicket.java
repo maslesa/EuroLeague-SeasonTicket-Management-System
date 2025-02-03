@@ -287,8 +287,8 @@ public class FanFinishBuyingTicket extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void sendEmail(String email) {
-        final String fromEmail = "ljubomirmaslesa@gmail.com";
-        final String password = "qlnc zsbq goks xigx";
+        final String fromEmail = ""; //insert your email
+        final String password = ""; //insert your app password (make it on gmail account)
         final String subject = "Season Ticket Purchase Confirmation";
         final String body = "Dear " + fan.getName() + ",\n\n"
                 + "Thank you for purchasing season tickets for " + card.getClubName() + ".\n"
