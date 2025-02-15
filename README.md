@@ -10,7 +10,7 @@ For Fans:
  - Use purchased tickets to attend matches.
 
 For Clubs:
- - Register and log in as a club.
+ - Log in as a club.
  - Define season ticket types and pricing.
  - Manage different seasons.
  - Schedule and organize matches.
